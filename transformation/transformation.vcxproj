@@ -14,19 +14,19 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{5F1CF02B-67F7-4E5C-8CA3-EB059EAD450B}</ProjectGuid>
     <RootNamespace>transformation</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -52,10 +52,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Program Files\Azure Kinect SDK v1.4.1\sdk\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>k4a.lib;C:\libjpeg-turbo64\lib\jpeg.lib;C:\libjpeg-turbo64\lib\jpeg-static.lib;C:\libjpeg-turbo64\lib\turbojpeg.lib;C:\libjpeg-turbo64\lib\turbojpeg-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Program Files\Azure Kinect SDK v1.1.0\sdk\windows-desktop\amd64\release\lib;C:\libjpeg-turbo64\lib;C:\libjpeg-turbo64\bin</AdditionalLibraryDirectories>
+      <AdditionalDependencies>k4a.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files\Azure Kinect SDK v1.4.1\sdk\windows-desktop\amd64\release\lib</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
     </Link>

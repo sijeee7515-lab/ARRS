@@ -5,7 +5,7 @@
 #include <k4arecord/playback.h>
 #include <string>
 #include "transformation_helpers.h"
-#include "turbojpeg.h"
+//#include "turbojpeg.h"
 
 static bool point_cloud_color_to_depth(k4a_transformation_t transformation_handle,
                                        const k4a_image_t depth_image,
