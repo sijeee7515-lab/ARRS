@@ -33,6 +33,10 @@ void get_color_depth(k4a::device &device, cv::Mat &color, cv::Mat &depth)
                     depthImg.get_width_pixels(),
                     CV_16U, (void *)depthImg.get_buffer())
                 .clone();
+
+    colorImg.reset();
+    depthImg.reset();
+    capture.reset();
 }
 
 void get_intrinsics(k4a::device &device, cv::Mat &cameraMatrix, cv::Mat &distCoeffs)
@@ -51,12 +55,40 @@ std::shared_ptr<open3d::geometry::PointCloud> get_pointcloud(k4a::device &device
 {
     k4a::capture capture;
     if (!device.get_capture(&capture, std::chrono::milliseconds(2000)))
-    {
         throw std::runtime_error("Failed to capture for point cloud");
-    }
 
     k4a::image depthImg = capture.get_depth_image();
+    if (!depthImg)
+        throw std::runtime_error("Invalid depth image");
+
+    // Convert to Open3D
     auto cloud = std::make_shared<open3d::geometry::PointCloud>();
-    // You can expand this to use Open3D::AzureKinectSensor or your existing transformation code
+    int width = depthImg.get_width_pixels();
+    int height = depthImg.get_height_pixels();
+    uint16_t *depthBuffer = reinterpret_cast<uint16_t *>(depthImg.get_buffer());
+
+    // Access intrinsics
+    k4a::calibration calib = device.get_calibration(K4A_DEPTH_MODE_NFOV_UNBINNED, K4A_COLOR_RESOLUTION_1080P);
+    auto cam = calib.depth_camera_calibration;
+
+    double fx = cam.intrinsics.parameters.param.fx;
+    double fy = cam.intrinsics.parameters.param.fy;
+    double cx = cam.intrinsics.parameters.param.cx;
+    double cy = cam.intrinsics.parameters.param.cy;
+
+    for (int v = 0; v < height; ++v)
+    {
+        for (int u = 0; u < width; ++u)
+        {
+            uint16_t d = depthBuffer[v * width + u];
+            if (d == 0)
+                continue;          // skip invalid pixels
+            float z = d / 1000.0f; // mm → m
+            float x = (u - cx) * z / fx;
+            float y = (v - cy) * z / fy;
+            cloud->points_.push_back(Eigen::Vector3d(x, y, z));
+        }
+    }
+
     return cloud;
 }

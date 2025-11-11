@@ -9,58 +9,102 @@ int main()
 {
     try
     {
-        // --- Initialize both cameras ---
-        k4a::device cam1 = open_kinect(0);
-        k4a::device cam2 = open_kinect(1);
+        uint32_t device_count = k4a_device_get_installed_count();
+        std::vector<k4a_device_t> devices(num_devices);
 
-        // --- Capture frames ---
-        cv::Mat color1, depth1, color2, depth2;
-        get_color_depth(cam1, color1, depth1);
-        get_color_depth(cam2, color2, depth2);
+        if (device_count == 0)
+        {
+            std::cerr << "No Azure Kinect devices found." << std::endl;
+            return -1;
+        }
 
-        // --- Load intrinsics ---
-        cv::Mat camMatrix1, distCoeffs1, camMatrix2, distCoeffs2;
-        get_intrinsics(cam1, camMatrix1, distCoeffs1);
-        get_intrinsics(cam2, camMatrix2, distCoeffs2);
+        std::cout << "Found " << device_count << " Kinect device(s)." << std::endl;
 
-        // --- Detect cube markers and get their poses ---
-        cv::Vec3d rvec1, tvec1, rvec2, tvec2;
-        detect_marker_pose(color1, camMatrix1, distCoeffs1, rvec1, tvec1);
-        detect_marker_pose(color2, camMatrix2, distCoeffs2, rvec2, tvec2);
+        std::vector<k4a::device> devices;
+        devices.reserve(device_count);
+        for (uint32_t i = 0; i < device_count; ++i)
+        {
+            devices.push_back(open_kinect(i));
+        }
 
-        // --- Compute cam2 → cam1 transformation ---
-        cv::Mat R1, R2;
-        cv::Rodrigues(rvec1, R1);
-        cv::Rodrigues(rvec2, R2);
+        // Poses and point clouds
+        std::vector<cv::Mat> rotations(device_count);
+        std::vector<cv::Mat> translations(device_count);
+        std::vector<std::shared_ptr<open3d::geometry::PointCloud>> clouds(device_count);
 
-        cv::Mat R_21 = R1 * R2.t();
-        cv::Mat t_21 = tvec1 - R_21 * tvec2;
+        // Capture and Detect i cameras
+        for (uint32_t i = 0; i < device_count; ++i)
+        {
+            std::cout << "\n[Camera " << i << "] Capturing..." << std::endl;
 
-        std::cout << "Rotation (cam2->cam1):\n"
-                  << R_21 << std::endl;
-        std::cout << "Translation (cam2->cam1):\n"
-                  << t_21.t() << std::endl;
+            cv::Mat color, depth;
+            get_color_depth(devices[i], color, depth);
 
-        // --- Convert to homogeneous matrix ---
-        cv::Mat T_21 = cv::Mat::eye(4, 4, CV_64F);
-        R_21.copyTo(T_21(cv::Rect(0, 0, 3, 3)));
-        t_21.copyTo(T_21(cv::Rect(3, 0, 1, 3)));
+            cv::Mat camMatrix, distCoeffs;
+            get_intrinsics(devices[i], camMatrix, distCoeffs);
 
-        // --- Save to file ---
-        cv::FileStorage fs("../data/extrinsics.yaml", cv::FileStorage::WRITE);
-        fs << "T_cam2_cam1" << T_21;
-        fs.release();
+            cv::Vec3d rvec, tvec;
+            bool found = detect_marker_pose(color, camMatrix, distCoeffs, rvec, tvec);
 
-        // --- Generate point clouds and refine via ICP ---
-        auto cloud1 = get_pointcloud(cam1);
-        auto cloud2 = get_pointcloud(cam2);
+            if (!found)
+            {
+                std::cerr << "Marker not detected for camera " << i << std::endl;
+                continue;
+            }
 
-        auto refined = align_point_clouds(cloud1, cloud2, R_21, t_21);
-        open3d::visualization::DrawGeometries({refined}, "Refined Alignment");
+            cv::Mat R;
+            cv::Rodrigues(rvec, R);
+            rotations[i] = R.clone();
+            translations[i] = cv::Mat(tvec).clone();
 
-        // --- Cleanup ---
-        cam1.close();
-        cam2.close();
+            // Generate point cloud
+            clouds[i] = get_pointcloud(devices[i]);
+
+            std::cout << "Pose estimated for camera " << i << ":\n"
+                      << "R = " << R << "\n"
+                      << "t = " << tvec << std::endl;
+        }
+        // Set the world cam reference
+        cv::Mat R_ref = rotations[0];
+        cv::Mat t_ref = translations[0];
+
+        std::string out_dir = "../data/extrinsics/";
+        std::filesystem::create_directories(out_dir);
+
+        // Compute the relative transforms
+        for (uint32_t i = 1; i < device_count; ++i)
+        {
+            if (rotations[i].empty() || translations[i].empty())
+                continue;
+
+            // Compute cam_i through cam_0
+            cv::Mat R_i0 = rotations[i] * R_ref.t();
+            cv::Mat t_i0 = translations[i] - R_i0 * t_ref;
+
+            cv::Mat T_i0 = cv::Mat::eye(4, 4, CV_64F);
+            R_i0.copyTo(T_i0(cv::Rect(0, 0, 3, 3)));
+            t_i0.copyTo(T_i0(cv::Rect(3, 0, 1, 3)));
+
+            std::string file = out_dir + "T_cam" + std::to_string(i) + "_cam0.yaml";
+            cv::FileStorage fs(file, cv::FileStorage::WRITE);
+            fs << "T_cam" + std::to_string(i) + "_cam0" << T_i0;
+            fs.release();
+
+            std::cout << "\nSaved extrinsics: " << file << std::endl;
+
+            // ICP refinement
+            if (clouds[0] && clouds[i])
+            {
+                std::cout << "Refining Camera " << i << " alignment via ICP..." << std::endl;
+                auto refined = align_point_clouds(clouds[0], clouds[i], R_i0, t_i0);
+                open3d::visualization::DrawGeometries({clouds[0], refined}, "Refined Alignment");
+            }
+        }
+
+                for (auto &dev : devices)
+            dev.close();
+
+        std::cout << "\nAll calibrations complete!" << std::endl;
     }
     catch (const std::exception &e)
     {
