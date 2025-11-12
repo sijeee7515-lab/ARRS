@@ -1,0 +1,9 @@
+# ninja log v6
+79	770	7846104244532691	transformation/CMakeFiles/transformation_example.dir/transformation_helpers.cpp.obj	2f4744ea90e33325
+96	4434	7846195659992767	marker/CMakeFiles/marker_calibration.dir/align_point_clouds.cpp.obj	f6e3f11e2e9384df
+65	2873	7846194401100648	marker/CMakeFiles/marker_calibration.dir/k4a_helpers.cpp.obj	d7688865ec784220
+6331	8920	7846196592388481	bin/marker_calibration.exe	10fbdeefcdcc7b7b
+75	948	7846104244369786	transformation/CMakeFiles/transformation_example.dir/main.cpp.obj	14b504325191597c
+87	6330	7846196529915416	marker/CMakeFiles/marker_calibration.dir/marker_calibration.cpp.obj	5bad92e26ffb55bf
+54	957	7846180537682433	marker/CMakeFiles/marker_calibration.dir/marker_helpers.cpp.obj	cf3e262f4ffc5aa5
+74	942	7846105800280824	transformation/transformation_example.exe	e7a3f42e77750587

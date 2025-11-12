@@ -5,24 +5,24 @@
 #include <k4arecord/playback.h>
 #include <string>
 #include <opencv2/core.hpp>
-#include <opencv2/core/persistence.hpp> // for FileStorage
+#include <opencv2/core/persistence.hpp>
 #include <iostream>
 #include "transformation_helpers.h"
 
 static bool point_cloud_color_to_depth(k4a_transformation_t transformation_handle,
-                                       const k4a_image_t depth_image,
-                                       const k4a_image_t color_image,
-                                       const std::string &file_name)
+    const k4a_image_t depth_image,
+    const k4a_image_t color_image,
+    const std::string& file_name)
 {
     int depth_image_width_pixels = k4a_image_get_width_pixels(depth_image);
     int depth_image_height_pixels = k4a_image_get_height_pixels(depth_image);
 
     k4a_image_t transformed_color_image = NULL;
     if (K4A_RESULT_SUCCEEDED != k4a_image_create(K4A_IMAGE_FORMAT_COLOR_BGRA32,
-                                                 depth_image_width_pixels,
-                                                 depth_image_height_pixels,
-                                                 depth_image_width_pixels * 4 * (int)sizeof(uint8_t),
-                                                 &transformed_color_image))
+        depth_image_width_pixels,
+        depth_image_height_pixels,
+        depth_image_width_pixels * 4 * (int)sizeof(uint8_t),
+        &transformed_color_image))
     {
         printf("Failed to create transformed color image\n");
         return false;
@@ -30,30 +30,30 @@ static bool point_cloud_color_to_depth(k4a_transformation_t transformation_handl
 
     k4a_image_t point_cloud_image = NULL;
     if (K4A_RESULT_SUCCEEDED != k4a_image_create(K4A_IMAGE_FORMAT_CUSTOM,
-                                                 depth_image_width_pixels,
-                                                 depth_image_height_pixels,
-                                                 depth_image_width_pixels * 3 * (int)sizeof(int16_t),
-                                                 &point_cloud_image))
+        depth_image_width_pixels,
+        depth_image_height_pixels,
+        depth_image_width_pixels * 3 * (int)sizeof(int16_t),
+        &point_cloud_image))
     {
         printf("Failed to create point cloud image\n");
         return false;
     }
 
     if (K4A_RESULT_SUCCEEDED != k4a_transformation_color_image_to_depth_camera(
-                                    transformation_handle,
-                                    depth_image,
-                                    color_image,
-                                    transformed_color_image))
+        transformation_handle,
+        depth_image,
+        color_image,
+        transformed_color_image))
     {
         printf("Failed to compute transformed color image\n");
         return false;
     }
 
     if (K4A_RESULT_SUCCEEDED != k4a_transformation_depth_image_to_point_cloud(
-                                    transformation_handle,
-                                    depth_image,
-                                    K4A_CALIBRATION_TYPE_DEPTH,
-                                    point_cloud_image))
+        transformation_handle,
+        depth_image,
+        K4A_CALIBRATION_TYPE_DEPTH,
+        point_cloud_image))
     {
         printf("Failed to compute point cloud\n");
         return false;
@@ -67,7 +67,7 @@ static bool point_cloud_color_to_depth(k4a_transformation_t transformation_handl
     return true;
 }
 
-static int capture(const std::string &output_dir, int frames)
+static int capture(const std::string& output_dir, int frames)
 {
     uint8_t deviceId = K4A_DEVICE_DEFAULT;
     int returnCode = 1;
@@ -75,7 +75,6 @@ static int capture(const std::string &output_dir, int frames)
     const int32_t TIMEOUT_IN_MS = 1000;
     k4a_transformation_t transformation = NULL;
     k4a_capture_t capture = NULL;
-    std::string file_name = "";
     uint32_t device_count = 0;
     k4a_device_configuration_t config = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
     k4a_image_t depth_image = NULL;
@@ -152,18 +151,6 @@ static int capture(const std::string &output_dir, int frames)
     }
 
     printf("Processing complete.\n");
-
-    // Optionally load extrinsic transform from marker calibration
-    cv::FileStorage fs("../data/extrinsics.yaml", cv::FileStorage::READ);
-    if (fs.isOpened())
-    {
-        cv::Mat T_cam2_cam1;
-        fs["T_cam2_cam1"] >> T_cam2_cam1;
-        std::cout << "Loaded extrinsics:\n"
-                  << T_cam2_cam1 << std::endl;
-        fs.release();
-    }
-
     returnCode = 0;
 
 Exit:
@@ -180,7 +167,7 @@ static void print_usage()
     printf("Usage: transformation.exe capture <output_directory> <frames>\n");
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     if (argc < 4)
     {
