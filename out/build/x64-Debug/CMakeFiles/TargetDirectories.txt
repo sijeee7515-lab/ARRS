@@ -1,0 +1,8 @@
+C:/Users/stenella/source/repos/ARRS/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/stenella/source/repos/ARRS/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/stenella/source/repos/ARRS/out/build/x64-Debug/marker/CMakeFiles/marker_calibration.dir
+C:/Users/stenella/source/repos/ARRS/out/build/x64-Debug/marker/CMakeFiles/edit_cache.dir
+C:/Users/stenella/source/repos/ARRS/out/build/x64-Debug/marker/CMakeFiles/rebuild_cache.dir
+C:/Users/stenella/source/repos/ARRS/out/build/x64-Debug/transformation/CMakeFiles/transformation_example.dir
+C:/Users/stenella/source/repos/ARRS/out/build/x64-Debug/transformation/CMakeFiles/edit_cache.dir
+C:/Users/stenella/source/repos/ARRS/out/build/x64-Debug/transformation/CMakeFiles/rebuild_cache.dir

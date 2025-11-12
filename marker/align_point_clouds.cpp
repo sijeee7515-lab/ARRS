@@ -1,26 +1,34 @@
-#include <open3d/Open3D.h>
+#include "align_point_clouds.hpp"
+#include <pcl/registration/icp.h>
+#include <pcl/common/transforms.h>
+#include <Eigen/Dense>
+#include <opencv2/core/eigen.hpp>
 
-std::shared_ptr<open3d::geometry::PointCloud> align_point_clouds(
-    const std::shared_ptr<open3d::geometry::PointCloud> &cloud1,
-    const std::shared_ptr<open3d::geometry::PointCloud> &cloud2,
+pcl::PointCloud<pcl::PointXYZ>::Ptr align_point_clouds(
+    const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud1,
+    const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud2,
     const cv::Mat &R, const cv::Mat &t)
 {
-    using namespace open3d;
+    Eigen::Matrix4f initTransform = Eigen::Matrix4f::Identity();
+    Eigen::Matrix3f r;
+    Eigen::Vector3f trans;
+    cv::cv2eigen(R, r);
+    cv::cv2eigen(t, trans);
+    initTransform.block<3,3>(0,0) = r;
+    initTransform.block<3,1>(0,3) = trans;
 
-    Eigen::Matrix4d initTransform = Eigen::Matrix4d::Identity();
-    cv::cv2eigen(R, initTransform.block<3, 3>(0, 0));
-    cv::cv2eigen(t, initTransform.block<3, 1>(0, 3));
+    auto cloud2_transformed = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    pcl::transformPointCloud(*cloud2, *cloud2_transformed, initTransform);
 
-    auto cloud2_copy = std::make_shared<geometry::PointCloud>(*cloud2);
-    cloud2_copy->Transform(initTransform);
+    pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
+    icp.setInputSource(cloud2_transformed);
+    icp.setInputTarget(cloud1);
+    icp.setMaximumIterations(50);
+    pcl::PointCloud<pcl::PointXYZ> Final;
+    icp.align(Final);
 
-    auto result = pipelines::registration::RegistrationICP(
-        *cloud2_copy, *cloud1, 0.02,
-        Eigen::Matrix4d::Identity(),
-        pipelines::registration::TransformationEstimationPointToPlane());
-
-    auto merged = std::make_shared<geometry::PointCloud>(*cloud1);
-    *merged += *cloud2_copy->Transform(result.transformation_);
+    auto merged = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>>(*cloud1);
+    *merged += Final;
 
     return merged;
 }

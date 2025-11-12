@@ -1,0 +1,101 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "marker",
+					"jsonFile" : "directory-marker-Debug-6de92f1ef4f411ad6195.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "marker",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "transformation",
+					"jsonFile" : "directory-transformation-Debug-3af349461ebde99fca95.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "transformation",
+					"targetIndexes" : 
+					[
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2
+					],
+					"name" : "MarkerCalibration",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "marker_calibration::@56281dda7f9dcb513435",
+					"jsonFile" : "target-marker_calibration-Debug-56b002cf2dfd9f3055c3.json",
+					"name" : "marker_calibration",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "transformation_example::@a71f657e283b28265255",
+					"jsonFile" : "target-transformation_example-Debug-9977754cfd0e8acd76d7.json",
+					"name" : "transformation_example",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/stenella/source/repos/ARRS/out/build/x64-Debug",
+		"source" : "C:/Users/stenella/source/repos/ARRS"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 8
+	}
+}

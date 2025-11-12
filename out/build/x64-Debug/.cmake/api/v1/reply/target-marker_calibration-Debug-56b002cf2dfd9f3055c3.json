@@ -1,0 +1,1626 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "bin/marker_calibration.exe"
+		},
+		{
+			"path" : "bin/marker_calibration.pdb"
+		}
+	],
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"_add_executable",
+			"add_executable",
+			"link_directories",
+			"target_link_libraries",
+			"_find_package",
+			"find_package",
+			"set_target_properties",
+			"include",
+			"find_VTK",
+			"find_external_library",
+			"boostcfg_find_component",
+			"find_boost",
+			"find_dependency",
+			"find_flann",
+			"set_property",
+			"find_qhull",
+			"add_definitions",
+			"add_compile_definitions",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+			"marker/CMakeLists.txt",
+			"C:/vcpkg/installed/x64-windows/share/pcl/PCLConfig.cmake",
+			"C:/vcpkg/installed/x64-windows/share/freetype/freetype-targets.cmake",
+			"C:/vcpkg/installed/x64-windows/share/freetype/freetype-config.cmake",
+			"C:/vcpkg/installed/x64-windows/share/freetype/vcpkg-cmake-wrapper.cmake",
+			"C:/vcpkg/installed/x64-windows/share/vtk/VTK-vtk-module-find-packages.cmake",
+			"C:/vcpkg/installed/x64-windows/share/vtk/vtk-config.cmake",
+			"C:/vcpkg/installed/x64-windows/share/vtk/VTK-targets.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost_iostreams/boost_iostreams-targets.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost_iostreams/boost_iostreams-config.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost/BoostConfig.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost/vcpkg-cmake-wrapper.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost_spirit/boost_spirit-targets.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost_spirit/boost_spirit-config.cmake",
+			"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost_serialization/boost_serialization-config.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost_thread/boost_thread-targets.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost_thread/boost_thread-config.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost_atomic/boost_atomic-targets.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost_atomic/boost_atomic-config.cmake",
+			"C:/vcpkg/installed/x64-windows/share/boost_filesystem/boost_filesystem-config.cmake",
+			"C:/vcpkg/installed/x64-windows/share/lz4/lz4Config.cmake",
+			"C:/vcpkg/installed/x64-windows/share/flann/flann-config.cmake",
+			"C:/vcpkg/installed/x64-windows/share/pcl/Modules/FindFLANN.cmake",
+			"C:/vcpkg/installed/x64-windows/share/pcl/Modules/FindQhull.cmake",
+			"C:/vcpkg/installed/x64-windows/share/hdf5/vcpkg-cmake-wrapper.cmake",
+			"C:/vcpkg/installed/x64-windows/share/opencv4/OpenCVModules.cmake",
+			"C:/vcpkg/installed/x64-windows/share/opencv4/OpenCVConfig.cmake",
+			"C:/vcpkg/installed/x64-windows/share/opencv/vcpkg-cmake-wrapper.cmake",
+			"C:/vcpkg/installed/x64-windows/share/eigen3/UseEigen3.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 19,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 608,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 16,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 26,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 1,
+				"line" : 7,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 5
+			},
+			{
+				"file" : 2,
+				"parent" : 6
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 737,
+				"parent" : 7
+			},
+			{
+				"command" : 9,
+				"file" : 2,
+				"line" : 578,
+				"parent" : 7
+			},
+			{
+				"command" : 8,
+				"file" : 2,
+				"line" : 323,
+				"parent" : 9
+			},
+			{
+				"command" : 5,
+				"file" : 2,
+				"line" : 274,
+				"parent" : 10
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 11
+			},
+			{
+				"file" : 7,
+				"parent" : 12
+			},
+			{
+				"command" : 7,
+				"file" : 7,
+				"line" : 176,
+				"parent" : 13
+			},
+			{
+				"file" : 6,
+				"parent" : 14
+			},
+			{
+				"command" : 5,
+				"file" : 6,
+				"line" : 1578,
+				"parent" : 15
+			},
+			{
+				"command" : 7,
+				"file" : 0,
+				"line" : 858,
+				"parent" : 16
+			},
+			{
+				"file" : 5,
+				"parent" : 17
+			},
+			{
+				"command" : 4,
+				"file" : 5,
+				"line" : 6,
+				"parent" : 18
+			},
+			{
+				"file" : 4,
+				"parent" : 19
+			},
+			{
+				"command" : 7,
+				"file" : 4,
+				"line" : 3,
+				"parent" : 20
+			},
+			{
+				"file" : 3,
+				"parent" : 21
+			},
+			{
+				"command" : 6,
+				"file" : 3,
+				"line" : 67,
+				"parent" : 22
+			},
+			{
+				"command" : 7,
+				"file" : 7,
+				"line" : 155,
+				"parent" : 13
+			},
+			{
+				"file" : 8,
+				"parent" : 24
+			},
+			{
+				"command" : 6,
+				"file" : 8,
+				"line" : 609,
+				"parent" : 25
+			},
+			{
+				"command" : 6,
+				"file" : 8,
+				"line" : 143,
+				"parent" : 25
+			},
+			{
+				"command" : 6,
+				"file" : 8,
+				"line" : 599,
+				"parent" : 25
+			},
+			{
+				"command" : 6,
+				"file" : 8,
+				"line" : 118,
+				"parent" : 25
+			},
+			{
+				"command" : 6,
+				"file" : 8,
+				"line" : 671,
+				"parent" : 25
+			},
+			{
+				"command" : 6,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 25
+			},
+			{
+				"command" : 9,
+				"file" : 2,
+				"line" : 581,
+				"parent" : 7
+			},
+			{
+				"command" : 11,
+				"file" : 2,
+				"line" : 301,
+				"parent" : 32
+			},
+			{
+				"command" : 5,
+				"file" : 2,
+				"line" : 128,
+				"parent" : 33
+			},
+			{
+				"command" : 7,
+				"file" : 0,
+				"line" : 858,
+				"parent" : 34
+			},
+			{
+				"file" : 12,
+				"parent" : 35
+			},
+			{
+				"command" : 4,
+				"file" : 12,
+				"line" : 3,
+				"parent" : 36
+			},
+			{
+				"file" : 11,
+				"parent" : 37
+			},
+			{
+				"command" : 10,
+				"file" : 11,
+				"line" : 128,
+				"parent" : 38
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 67,
+				"parent" : 39
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 40
+			},
+			{
+				"file" : 10,
+				"parent" : 41
+			},
+			{
+				"command" : 7,
+				"file" : 10,
+				"line" : 68,
+				"parent" : 42
+			},
+			{
+				"file" : 9,
+				"parent" : 43
+			},
+			{
+				"command" : 6,
+				"file" : 9,
+				"line" : 60,
+				"parent" : 44
+			},
+			{
+				"command" : 10,
+				"file" : 11,
+				"line" : 128,
+				"parent" : 38
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 67,
+				"parent" : 46
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 47
+			},
+			{
+				"file" : 16,
+				"parent" : 48
+			},
+			{
+				"command" : 12,
+				"file" : 16,
+				"line" : 52,
+				"parent" : 49
+			},
+			{
+				"command" : 5,
+				"file" : 15,
+				"line" : 76,
+				"parent" : 50
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 51
+			},
+			{
+				"file" : 14,
+				"parent" : 52
+			},
+			{
+				"command" : 7,
+				"file" : 14,
+				"line" : 94,
+				"parent" : 53
+			},
+			{
+				"file" : 13,
+				"parent" : 54
+			},
+			{
+				"command" : 6,
+				"file" : 13,
+				"line" : 60,
+				"parent" : 55
+			},
+			{
+				"command" : 12,
+				"file" : 14,
+				"line" : 73,
+				"parent" : 53
+			},
+			{
+				"command" : 5,
+				"file" : 15,
+				"line" : 76,
+				"parent" : 57
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 58
+			},
+			{
+				"file" : 18,
+				"parent" : 59
+			},
+			{
+				"command" : 7,
+				"file" : 18,
+				"line" : 87,
+				"parent" : 60
+			},
+			{
+				"file" : 17,
+				"parent" : 61
+			},
+			{
+				"command" : 6,
+				"file" : 17,
+				"line" : 60,
+				"parent" : 62
+			},
+			{
+				"command" : 10,
+				"file" : 11,
+				"line" : 128,
+				"parent" : 38
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 67,
+				"parent" : 64
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 65
+			},
+			{
+				"file" : 21,
+				"parent" : 66
+			},
+			{
+				"command" : 12,
+				"file" : 21,
+				"line" : 46,
+				"parent" : 67
+			},
+			{
+				"command" : 5,
+				"file" : 15,
+				"line" : 76,
+				"parent" : 68
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 69
+			},
+			{
+				"file" : 20,
+				"parent" : 70
+			},
+			{
+				"command" : 7,
+				"file" : 20,
+				"line" : 33,
+				"parent" : 71
+			},
+			{
+				"file" : 19,
+				"parent" : 72
+			},
+			{
+				"command" : 6,
+				"file" : 19,
+				"line" : 60,
+				"parent" : 73
+			},
+			{
+				"command" : 9,
+				"file" : 2,
+				"line" : 581,
+				"parent" : 7
+			},
+			{
+				"command" : 13,
+				"file" : 2,
+				"line" : 305,
+				"parent" : 75
+			},
+			{
+				"command" : 5,
+				"file" : 2,
+				"line" : 260,
+				"parent" : 76
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 77
+			},
+			{
+				"file" : 24,
+				"parent" : 78
+			},
+			{
+				"command" : 5,
+				"file" : 24,
+				"line" : 45,
+				"parent" : 79
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 80
+			},
+			{
+				"file" : 23,
+				"parent" : 81
+			},
+			{
+				"command" : 12,
+				"file" : 23,
+				"line" : 28,
+				"parent" : 82
+			},
+			{
+				"command" : 5,
+				"file" : 15,
+				"line" : 76,
+				"parent" : 83
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 84
+			},
+			{
+				"file" : 22,
+				"parent" : 85
+			},
+			{
+				"command" : 6,
+				"file" : 22,
+				"line" : 30,
+				"parent" : 86
+			},
+			{
+				"command" : 9,
+				"file" : 2,
+				"line" : 578,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 307,
+				"parent" : 88
+			},
+			{
+				"command" : 5,
+				"file" : 2,
+				"line" : 162,
+				"parent" : 89
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 904,
+				"parent" : 90
+			},
+			{
+				"file" : 25,
+				"parent" : 91
+			},
+			{
+				"command" : 14,
+				"file" : 25,
+				"line" : 77,
+				"parent" : 92
+			},
+			{
+				"command" : 16,
+				"file" : 1,
+				"line" : 17,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 1,
+				"line" : 6,
+				"parent" : 0
+			},
+			{
+				"command" : 7,
+				"file" : 0,
+				"line" : 858,
+				"parent" : 95
+			},
+			{
+				"file" : 29,
+				"parent" : 96
+			},
+			{
+				"command" : 4,
+				"file" : 29,
+				"line" : 3,
+				"parent" : 97
+			},
+			{
+				"file" : 28,
+				"parent" : 98
+			},
+			{
+				"command" : 7,
+				"file" : 28,
+				"line" : 126,
+				"parent" : 99
+			},
+			{
+				"file" : 27,
+				"parent" : 100
+			},
+			{
+				"command" : 12,
+				"file" : 27,
+				"line" : 37,
+				"parent" : 101
+			},
+			{
+				"command" : 5,
+				"file" : 15,
+				"line" : 76,
+				"parent" : 102
+			},
+			{
+				"command" : 7,
+				"file" : 0,
+				"line" : 858,
+				"parent" : 103
+			},
+			{
+				"file" : 26,
+				"parent" : 104
+			},
+			{
+				"command" : 17,
+				"file" : 26,
+				"line" : 11,
+				"parent" : 105
+			},
+			{
+				"command" : 18,
+				"file" : 1,
+				"line" : 10,
+				"parent" : 0
+			},
+			{
+				"command" : 9,
+				"file" : 2,
+				"line" : 581,
+				"parent" : 7
+			},
+			{
+				"command" : 7,
+				"file" : 2,
+				"line" : 357,
+				"parent" : 108
+			},
+			{
+				"file" : 30,
+				"parent" : 109
+			},
+			{
+				"command" : 18,
+				"file" : 30,
+				"line" : 20,
+				"parent" : 110
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-openmp"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 94,
+					"define" : "BOOST_ALL_NO_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_ATOMIC_DYN_LINK"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_ATOMIC_NO_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_CHRONO_DYN_LINK"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_CHRONO_NO_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_CONTAINER_DYN_LINK"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_CONTAINER_NO_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_DATE_TIME_DYN_LINK"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_DATE_TIME_NO_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_FILESYSTEM_DYN_LINK=1"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_FILESYSTEM_NO_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_IOSTREAMS_DYN_LINK"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_IOSTREAMS_NO_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_RANDOM_DYN_LINK"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_RANDOM_NO_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_SERIALIZATION_DYN_LINK"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_SERIALIZATION_NO_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_THREAD_DYN_LINK"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_THREAD_NO_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "BOOST_THREAD_USE_DLL"
+				},
+				{
+					"backtrace" : 106,
+					"define" : "H5_BUILT_AS_DYNAMIC_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "KISSFFT_DLL_IMPORT=1"
+				},
+				{
+					"backtrace" : 94,
+					"define" : "__SSE2__"
+				},
+				{
+					"backtrace" : 94,
+					"define" : "__SSE3__"
+				},
+				{
+					"backtrace" : 94,
+					"define" : "__SSE4_1__"
+				},
+				{
+					"backtrace" : 94,
+					"define" : "__SSE4_2__"
+				},
+				{
+					"backtrace" : 94,
+					"define" : "__SSE__"
+				},
+				{
+					"backtrace" : 94,
+					"define" : "__SSSE3__"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "kiss_fft_scalar=double"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 107,
+					"path" : "C:/Users/stenella/source/repos/ARRS/marker"
+				},
+				{
+					"backtrace" : 111,
+					"isSystem" : true,
+					"path" : "C:/vcpkg/installed/x64-windows/include/eigen3"
+				},
+				{
+					"backtrace" : 107,
+					"isSystem" : true,
+					"path" : "C:/vcpkg/installed/x64-windows/include/opencv4"
+				},
+				{
+					"backtrace" : 107,
+					"isSystem" : true,
+					"path" : "C:/vcpkg/installed/x64-windows/include"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "C:/vcpkg/installed/x64-windows/include/vtk-9.3"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					4,
+					4,
+					4,
+					4,
+					4,
+					4,
+					4,
+					4,
+					4,
+					4,
+					4,
+					4,
+					4,
+					4,
+					4
+				],
+				"standard" : "17"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3
+			]
+		}
+	],
+	"id" : "marker_calibration::@56281dda7f9dcb513435",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:console",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "-LIBPATH:C:\\vcpkg\\installed\\x64-windows\\debug\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "-LIBPATH:C:\\vcpkg\\installed\\x64-windows\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_stitching4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_aruco4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_bgsegm4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_bioinspired4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_ccalib4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_dnn_objdetect4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_dnn_superres4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_dpm4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_face4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_fuzzy4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_hdf4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_hfs4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_img_hash4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_intensity_transform4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_line_descriptor4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_mcc4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_rapid4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_reg4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_saliency4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_signal4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_stereo4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_structured_light4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_superres4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_surface_matching4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_tracking4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_videostab4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_wechat_qrcode4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_xfeatures2d4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_xobjdetect4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_xphoto4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_surfaced.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_keypointsd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_trackingd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_recognitiond.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_stereod.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_outofcored.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_peopled.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\flann_cppd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\k4a.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_shape4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_highgui4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_datasets4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_plot4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_text4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_ml4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_phase_unwrapping4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_optflow4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_ximgproc4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_video4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_videoio4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_imgcodecs4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_objdetect4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_calib3d4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_dnn4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_features2d4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_flann4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_photo4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_imgproc4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\opencv_core4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_registrationd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_segmentationd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_featuresd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_filtersd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_sample_consensusd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_mld.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_visualizationd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_searchd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_kdtreed.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_iod.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_octreed.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_io_plyd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 8,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\libpng16d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 8,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\zlibd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkChartsCore-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkInteractionImage-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkIOGeometry-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkIOPLY-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkRenderingLOD-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkViewsContext2D-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkViewsCore-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkInteractionWidgets-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkFiltersModeling-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkInteractionStyle-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkFiltersExtraction-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkIOLegacy-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkIOCore-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkRenderingAnnotation-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkRenderingContextOpenGL2-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkRenderingContext2D-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkRenderingFreeType-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 23,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\freetyped.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkRenderingOpenGL2-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkIOImage-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 26,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkRenderingHyperTreeGrid-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkImagingSources-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkImagingCore-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 26,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkRenderingUI-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkRenderingCore-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkCommonColor-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkFiltersSources-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkFiltersGeneral-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkCommonComputationalGeometry-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkFiltersGeometry-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkFiltersCore-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkCommonExecutionModel-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkCommonDataModel-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkCommonMisc-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkCommonTransforms-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkCommonMath-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 27,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkkissfft-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 28,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\glew32d.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "opengl32.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "glu32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtkCommonCore-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 29,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtktoken-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 30,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\vtksys-9.3d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 31,
+				"fragment" : "ws2_32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 31,
+				"fragment" : "dbghelp.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 31,
+				"fragment" : "psapi.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\pcl_commond.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\boost_iostreams-vc143-mt-gd-x64-1_89.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 45,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\boost_random-vc143-mt-gd-x64-1_89.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\boost_filesystem-vc143-mt-gd-x64-1_89.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\boost_serialization-vc143-mt-gd-x64-1_89.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 56,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\boost_thread-vc143-mt-gd-x64-1_89.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 63,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\boost_atomic-vc143-mt-gd-x64-1_89.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 74,
+				"fragment" : "synchronization.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 63,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\boost_chrono-vc143-mt-gd-x64-1_89.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 63,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\boost_date_time-vc143-mt-gd-x64-1_89.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 63,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\boost_container-vc143-mt-gd-x64-1_89.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 87,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\lz4d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 93,
+				"fragment" : "C:\\vcpkg\\installed\\x64-windows\\debug\\lib\\qhull_rd.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "marker_calibration",
+	"nameOnDisk" : "marker_calibration.exe",
+	"paths" : 
+	{
+		"build" : "marker",
+		"source" : "marker"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				4
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "marker/marker_calibration.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "marker/marker_helpers.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "marker/k4a_helpers.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "marker/align_point_clouds.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "C:/vcpkg/installed/x64-windows/share/nlohmann_json/nlohmann_json.natvis",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "EXECUTABLE"
+}

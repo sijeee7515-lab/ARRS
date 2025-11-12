@@ -17,22 +17,18 @@ void get_color_depth(k4a::device &device, cv::Mat &color, cv::Mat &depth)
 {
     k4a::capture capture;
     if (!device.get_capture(&capture, std::chrono::milliseconds(2000)))
-    {
         throw std::runtime_error("Failed to get capture");
-    }
 
     k4a::image colorImg = capture.get_color_image();
     k4a::image depthImg = capture.get_depth_image();
 
     color = cv::Mat(colorImg.get_height_pixels(),
                     colorImg.get_width_pixels(),
-                    CV_8UC4, (void *)colorImg.get_buffer())
-                .clone();
+                    CV_8UC4, (void*)colorImg.get_buffer()).clone();
 
     depth = cv::Mat(depthImg.get_height_pixels(),
                     depthImg.get_width_pixels(),
-                    CV_16U, (void *)depthImg.get_buffer())
-                .clone();
+                    CV_16U, (void*)depthImg.get_buffer()).clone();
 
     colorImg.reset();
     depthImg.reset();
@@ -47,11 +43,10 @@ void get_intrinsics(k4a::device &device, cv::Mat &cameraMatrix, cv::Mat &distCoe
     cameraMatrix = (cv::Mat_<double>(3, 3) << cam.intrinsics.parameters.param.fx, 0, cam.intrinsics.parameters.param.cx,
                     0, cam.intrinsics.parameters.param.fy, cam.intrinsics.parameters.param.cy,
                     0, 0, 1);
-
-    distCoeffs = cv::Mat::zeros(1, 5, CV_64F); // Kinect uses rectified images, so typically no distortion
+    distCoeffs = cv::Mat::zeros(1, 5, CV_64F);
 }
 
-std::shared_ptr<open3d::geometry::PointCloud> get_pointcloud(k4a::device &device)
+pcl::PointCloud<pcl::PointXYZ>::Ptr get_point_cloud(k4a::device &device)
 {
     k4a::capture capture;
     if (!device.get_capture(&capture, std::chrono::milliseconds(2000)))
@@ -61,13 +56,11 @@ std::shared_ptr<open3d::geometry::PointCloud> get_pointcloud(k4a::device &device
     if (!depthImg)
         throw std::runtime_error("Invalid depth image");
 
-    // Convert to Open3D
-    auto cloud = std::make_shared<open3d::geometry::PointCloud>();
+    auto cloud = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     int width = depthImg.get_width_pixels();
     int height = depthImg.get_height_pixels();
-    uint16_t *depthBuffer = reinterpret_cast<uint16_t *>(depthImg.get_buffer());
+    uint16_t* depthBuffer = reinterpret_cast<uint16_t*>(depthImg.get_buffer());
 
-    // Access intrinsics
     k4a::calibration calib = device.get_calibration(K4A_DEPTH_MODE_NFOV_UNBINNED, K4A_COLOR_RESOLUTION_1080P);
     auto cam = calib.depth_camera_calibration;
 
@@ -81,14 +74,19 @@ std::shared_ptr<open3d::geometry::PointCloud> get_pointcloud(k4a::device &device
         for (int u = 0; u < width; ++u)
         {
             uint16_t d = depthBuffer[v * width + u];
-            if (d == 0)
-                continue;          // skip invalid pixels
-            float z = d / 1000.0f; // mm → m
+            if (d == 0) continue;
+
+            float z = d / 1000.0f;  // mm -> meters
             float x = (u - cx) * z / fx;
             float y = (v - cy) * z / fy;
-            cloud->points_.push_back(Eigen::Vector3d(x, y, z));
+
+            cloud->points.emplace_back(x, y, z);
         }
     }
+
+    cloud->width = static_cast<uint32_t>(cloud->points.size());
+    cloud->height = 1;
+    cloud->is_dense = false;
 
     return cloud;
 }
