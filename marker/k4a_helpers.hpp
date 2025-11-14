@@ -5,6 +5,17 @@
 #include <pcl/point_cloud.h>
 
 k4a::device open_kinect(int index);
-void get_color_depth(k4a::device& device, cv::Mat& color, cv::Mat& depth);
-void get_intrinsics(k4a::device& device, cv::Mat& cameraMatrix, cv::Mat& distCoeffs);
-pcl::PointCloud<pcl::PointXYZRGB>::Ptr get_point_cloud(k4a::device& device);  
+
+void get_color_depth(
+    k4a::device& device,
+    cv::Mat& color,
+    cv::Mat& depth);
+
+void get_intrinsics(
+    k4a::device& device,
+    cv::Mat& cameraMatrix,
+    cv::Mat& distCoeffs);
+
+// Point cloud in COLOR camera coordinates
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr get_point_cloud(
+    k4a::device& device);

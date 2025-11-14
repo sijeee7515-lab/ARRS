@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.15)
-project(MarkerCalibration)
-set(CMAKE_CXX_STANDARD 17)
+project(MultiKinectCalibration LANGUAGES CXX)
 
-# Find dependencies
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Dependencies
 find_package(OpenCV REQUIRED)
 find_package(PCL 1.12 REQUIRED)
-find_package(k4a REQUIRED)  # Changed from azure-kinect-sensor-sdk
+find_package(k4a REQUIRED)
 
 include_directories(
     ${OpenCV_INCLUDE_DIRS}
@@ -18,15 +20,16 @@ add_definitions(${PCL_DEFINITIONS})
 
 add_executable(marker_calibration
     marker_calibration.cpp
-    marker_helpers.cpp
     k4a_helpers.cpp
+    marker_helpers.cpp
+    extrinsics_io.cpp
     align_point_clouds.cpp
 )
 
 target_link_libraries(marker_calibration
     ${OpenCV_LIBS}
     ${PCL_LIBRARIES}
-    k4a::k4a  # Modern CMake target (handles includes automatically)
+    k4a::k4a
 )
 
 set_target_properties(marker_calibration PROPERTIES
