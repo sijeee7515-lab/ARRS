@@ -30,14 +30,22 @@ transforms them into a shared coordinate system, and outputs fused PLY frames su
 
 ## Instructions
 
-1. build the project using either `CMake` or `Visual Studio`
+1. build the project using `Visual Studio`
 
 2. the `.exe` will be in `marker/out/build/x64-Debug/bin/marker_calibration.exe`
 
 3. `cd` to the `.exe` folder
 
-4. run calibration first: `./marker_calibration.exe calib <master device serial number>`
+4. run calibration first: 
+	- for board: `./marker_calibration.exe calib_board <master device serial number>`
+
+	- for cube: `./marker_calibration.exe calib <master device serial number>`
 
 5. this will generates `extrinsics.txt` inside `/marker` folder
 
 6. run capture then: `./marker_calibration.exe capture <number of frame to be captured>`
+
+## Misc
+- remove `extrinsics.txt` if you want to recalibrate the cameras
+- `extrinsics.txt` is a great way to debug 
+- calibration target should be placed in roughly 1 meter from the cameras and make sure all cameras can clearly see the marker in the middle without major angle distortion.
