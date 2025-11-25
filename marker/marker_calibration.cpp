@@ -26,7 +26,7 @@ static const std::string kPlyBasePath = "../../../../output_frames/output_frame_
 
 const int CALIB_MARKER_ID = 0;
 
-// ---------- Calibration ----------
+// calibration
 void run_calibration(
     std::vector<k4a::device>& devices,
     std::vector<Eigen::Matrix4f>& extrinsics,
@@ -106,7 +106,7 @@ void run_calibration(
     }
 }
 
-// ---------- Capture & Fuse ----------
+// capture & fuse
 void capture_frames_and_save(
     std::vector<k4a::device>& devices,
     const std::vector<Eigen::Matrix4f>& extrinsics,
@@ -115,16 +115,14 @@ void capture_frames_and_save(
     const uint32_t device_count = static_cast<uint32_t>(devices.size());
     if (extrinsics.size() != device_count) throw std::runtime_error("Extrinsics mismatch");
 
-    // Helper: Pre-fetch calibration structs
+    // helper: pre-fetch calibration structs
     std::vector<k4a::calibration> device_calibs;
     for (auto& dev : devices) device_calibs.push_back(get_calibration(dev));
 
-    // --- WARMUP SEQUENCE ---
     std::cout << "\n[Warmup] Flushing buffers to ensure sync...\n";
     for (int i = 0; i < 30; ++i) {
         std::vector<k4a::capture> dummy_caps;
         capture_batch(devices, dummy_caps);
-        // Just discard
     }
     std::cout << "[Warmup] Done. Starting Capture.\n";
 
@@ -134,7 +132,6 @@ void capture_frames_and_save(
     {
         std::cout << "Frame " << (frame + 1) << " / " << num_frames << "\n";
 
-        // 1. BATCH CAPTURE
         std::cout << "  Triggering sync capture...\n";
         std::vector<k4a::capture> captures;
         if (!capture_batch(devices, captures)) {
@@ -142,7 +139,6 @@ void capture_frames_and_save(
             continue;
         }
 
-        // 2. PROCESS CLOUDS
         std::cout << "  Processing point clouds...\n";
 
         auto fused_cloud = frame_to_cloud(captures[0], device_calibs[0]);
@@ -173,8 +169,6 @@ void capture_frames_and_save(
     }
 }
 
-// ... (main function remains the same)
-
 int main(int argc, char** argv)
 {
     try {
@@ -195,7 +189,7 @@ int main(int argc, char** argv)
         std::vector<k4a::device> devices;
         for (uint32_t i = 0; i < device_count; ++i) devices.push_back(open_device(i));
 
-        // Start Devices with Sync
+        // start devices with sync
         for (uint32_t i = 0; i < device_count; ++i) {
             bool is_master = (master_serial.empty() && i == 0) || (get_serial(devices[i]) == master_serial);
             int delay = is_master ? 0 : (i + 1) * 160;

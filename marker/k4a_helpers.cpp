@@ -71,11 +71,11 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr frame_to_cloud(
         for (int u = 0; u < width; u += step) {
             int idx = v * width + u;
             uint16_t d = depthBuffer[idx];
-            if (d == 0 || d > 3500) continue;
+            if (d == 0 || d > 3860) continue;
 
             k4a_float2_t p2d = { (float)u + 0.5f, (float)v + 0.5f };
             k4a_float3_t p3d;
-            if (calib.convert_2d_to_3d(p2d, (float)d, K4A_CALIBRATION_TYPE_DEPTH, K4A_CALIBRATION_TYPE_COLOR, &p3d)) {
+            if (calib.convert_2d_to_3d(p2d, (float)d, K4A_CALIBRATION_TYPE_DEPTH, K4A_CALIBRATION_TYPE_DEPTH, &p3d)) {
                 pcl::PointXYZRGB p;
                 p.x = p3d.xyz.x / 1000.0f;
                 p.y = p3d.xyz.y / 1000.0f;
@@ -117,11 +117,113 @@ void get_intrinsics(k4a::device& device, cv::Mat& M, cv::Mat& D) {
     D.at<double>(6, 0) = p.k5; D.at<double>(7, 0) = p.k6;
 }
 
-pcl::PointCloud<pcl::PointXYZRGB>::Ptr get_point_cloud(k4a::device& device) {
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr get_point_cloud(k4a::device& device)
+{
+    // --- Get a capture ---
     k4a::capture capture;
-    if (device.get_capture(&capture, std::chrono::milliseconds(3000))) {
-        auto calib = get_calibration(device);
-        return frame_to_cloud(capture, calib);
+    if (!device.get_capture(&capture, std::chrono::milliseconds(2000)))
+    {
+        throw std::runtime_error("Failed to capture for point cloud");
     }
-    return nullptr;
+
+    k4a::image depthImg = capture.get_depth_image();
+    k4a::image colorImg = capture.get_color_image();
+
+    if (!depthImg || !colorImg)
+    {
+        throw std::runtime_error("Missing depth or color image");
+    }
+
+    // --- Get calibration + transformation handle ---
+    k4a_calibration_t calib = device.get_calibration(
+        K4A_DEPTH_MODE_NFOV_UNBINNED,
+        K4A_COLOR_RESOLUTION_1080P);
+
+    k4a_transformation_t transformation =
+        k4a_transformation_create(&calib);
+
+    // --- Warp color into depth camera coordinates ---
+    k4a::image color_in_depth =
+        k4a::image::create(
+            K4A_IMAGE_FORMAT_COLOR_BGRA32,
+            depthImg.get_width_pixels(),
+            depthImg.get_height_pixels(),
+            depthImg.get_width_pixels() * 4);
+
+    if (K4A_RESULT_SUCCEEDED != k4a_transformation_color_image_to_depth_camera(
+        transformation,
+        depthImg.handle(),
+        colorImg.handle(),
+        color_in_depth.handle()))
+    {
+        throw std::runtime_error("Failed to align color to depth camera");
+    }
+
+    // --- Convert depth map to 3D point cloud (XYZ) ---
+    k4a::image pointCloudImg =
+        k4a::image::create(
+            K4A_IMAGE_FORMAT_CUSTOM,
+            depthImg.get_width_pixels(),
+            depthImg.get_height_pixels(),
+            depthImg.get_width_pixels() * 3 * sizeof(int16_t));
+
+    if (K4A_RESULT_SUCCEEDED != k4a_transformation_depth_image_to_point_cloud(
+        transformation,
+        depthImg.handle(),
+        K4A_CALIBRATION_TYPE_DEPTH,
+        pointCloudImg.handle()))
+    {
+        throw std::runtime_error("Failed to convert depth to point cloud");
+    }
+
+    k4a_transformation_destroy(transformation);
+
+    // --- Build PCL Point Cloud ---
+    auto cloud = pcl::PointCloud<pcl::PointXYZRGB>::Ptr(
+        new pcl::PointCloud<pcl::PointXYZRGB>);
+
+    cloud->width = depthImg.get_width_pixels();
+    cloud->height = depthImg.get_height_pixels();
+    cloud->is_dense = false;
+    cloud->points.resize(cloud->width * cloud->height);
+
+    int width = depthImg.get_width_pixels();
+    int height = depthImg.get_height_pixels();
+
+    const int16_t* xyz = reinterpret_cast<const int16_t*>(pointCloudImg.get_buffer());
+    const uint8_t* bgra = color_in_depth.get_buffer();
+
+    size_t idx = 0;
+
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x, ++idx)
+        {
+            pcl::PointXYZRGB& pt = cloud->points[idx];
+
+            int16_t X = xyz[3 * idx + 0];
+            int16_t Y = xyz[3 * idx + 1];
+            int16_t Z = xyz[3 * idx + 2];
+
+            // Z==0 indicates invalid depth
+            if (Z == 0)
+            {
+                pt.x = pt.y = pt.z = std::numeric_limits<float>::quiet_NaN();
+                continue;
+            }
+
+            // Convert from millimeters → meters
+            pt.x = X / 1000.0f;
+            pt.y = Y / 1000.0f;
+            pt.z = Z / 1000.0f;
+
+            // BGRA aligned to depth image
+            const uint8_t* pix = &bgra[4 * idx];
+            pt.b = pix[0];
+            pt.g = pix[1];
+            pt.r = pix[2];
+        }
+    }
+
+    return cloud;
 }

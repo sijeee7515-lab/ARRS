@@ -1,146 +1,217 @@
 #include "align_point_clouds.hpp"
 
 #include <pcl/registration/icp.h>
+#include <pcl/registration/icp_nl.h>
 #include <pcl/common/transforms.h>
 #include <pcl/filters/voxel_grid.h>
+#include <pcl/filters/filter.h>
 #include <pcl/features/normal_3d.h>
-#include <pcl/registration/icp_nl.h> 
-#include <pcl/filters/filter.h> 
-#include <Eigen/Dense>
-#include <memory>
-#include <opencv2/core/eigen.hpp>
-#include <iostream>
 
-// Helper to downsample for speed
-pcl::PointCloud<pcl::PointXYZRGB>::Ptr downsample(
+#include <opencv2/core/eigen.hpp>
+#include <Eigen/Dense>
+
+#include <iostream>
+#include <memory>
+#include <vector>
+
+
+// downsample
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr downsampleCloud(
     const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud,
-    float leaf_size)
+    float voxel)
 {
-    pcl::VoxelGrid<pcl::PointXYZRGB> voxel_filter;
-    auto output = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-    voxel_filter.setInputCloud(cloud);
-    voxel_filter.setLeafSize(leaf_size, leaf_size, leaf_size);
-    voxel_filter.filter(*output);
-    return output;
+    auto filtered = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+
+    if (!cloud || cloud->empty())
+        return filtered;
+
+    pcl::VoxelGrid<pcl::PointXYZRGB> vg;
+    vg.setInputCloud(cloud);
+    vg.setLeafSize(voxel, voxel, voxel);
+    vg.filter(*filtered);
+
+    return filtered;
 }
 
-// NEW: Manually combine Cloud + Normals (Fixes build error)
-pcl::PointCloud<pcl::PointNormal>::Ptr compute_normals(
+// Compute normals – returns PointNormal cloud
+pcl::PointCloud<pcl::PointNormal>::Ptr computeNormals(
     const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud,
-    float radius)
+    float search_radius)
 {
-    auto normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
+    auto out = std::make_shared<pcl::PointCloud<pcl::PointNormal>>();
 
+    if (!cloud || cloud->empty())
+        return out;
+
+    std::cout << "      [Normals] computing for cloud size = "
+        << cloud->size() << ", radius = " << search_radius << "\n";
+
+    // Estimate normals on this cloud
     pcl::NormalEstimation<pcl::PointXYZRGB, pcl::Normal> ne;
     ne.setInputCloud(cloud);
+    ne.setSearchMethod(
+        pcl::search::KdTree<pcl::PointXYZRGB>::Ptr(
+            new pcl::search::KdTree<pcl::PointXYZRGB>()));
+    ne.setRadiusSearch(search_radius);
 
-    auto tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZRGB>>();
-    ne.setSearchMethod(tree);
-    ne.setRadiusSearch(radius);
+    auto normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
     ne.compute(*normals);
 
-    // Manual Copy Loop (Replaces concatenateFields)
-    auto cloud_with_normals = std::make_shared<pcl::PointCloud<pcl::PointNormal>>();
-    cloud_with_normals->resize(cloud->size());
+    std::cout << "      [Normals] got " << normals->size() << " normals\n";
 
-    for (size_t i = 0; i < cloud->size(); ++i)
+    size_t N = std::min(cloud->size(), normals->size());
+    out->resize(N);
+
+    for (size_t i = 0; i < N; i++)
     {
         const auto& p = cloud->points[i];
         const auto& n = normals->points[i];
-        auto& pn = cloud_with_normals->points[i];
+        auto& o = out->points[i];
 
-        // Copy position
-        pn.x = p.x;
-        pn.y = p.y;
-        pn.z = p.z;
-
-        // Copy normal
-        pn.normal_x = n.normal_x;
-        pn.normal_y = n.normal_y;
-        pn.normal_z = n.normal_z;
-        pn.curvature = n.curvature;
+        o.x = p.x;
+        o.y = p.y;
+        o.z = p.z;
+        o.normal_x = n.normal_x;
+        o.normal_y = n.normal_y;
+        o.normal_z = n.normal_z;
+        o.curvature = n.curvature;
     }
 
-    return cloud_with_normals;
+    return out;
 }
 
+//icp
 pcl::PointCloud<pcl::PointXYZRGB>::Ptr align_point_clouds(
     const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud1,
     const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud2,
     const cv::Mat& R,
     const cv::Mat& t)
 {
-    std::cout << "  [Align] Cloud1: " << cloud1->points.size()
-        << " pts, Cloud2: " << cloud2->points.size() << " pts\n";
+    if (!cloud1 || !cloud2 || cloud1->empty() || cloud2->empty())
+    {
+        std::cerr << "[ALIGN] ERROR: Empty point cloud.\n";
+        return cloud1;
+    }
 
-    // 1. Initial Transform
-    Eigen::Matrix4f initTransform = Eigen::Matrix4f::Identity();
-    Eigen::Matrix3f r_eig;
+    std::cout << "  [Align] Cloud1 = " << cloud1->size()
+        << " pts, Cloud2 = " << cloud2->size() << " pts\n";
+
+    //r,t to eigen
+    Eigen::Matrix4f init = Eigen::Matrix4f::Identity();
+    Eigen::Matrix3f R_eig;
     Eigen::Vector3f t_eig;
-    cv::cv2eigen(R, r_eig);
+
+    cv::cv2eigen(R, R_eig);
     cv::cv2eigen(t, t_eig);
-    initTransform.block<3, 3>(0, 0) = r_eig;
-    initTransform.block<3, 1>(0, 3) = t_eig;
 
-    auto cloud2_aligned = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-    pcl::transformPointCloud(*cloud2, *cloud2_aligned, initTransform);
+    init.block<3, 3>(0, 0) = R_eig;
+    init.block<3, 1>(0, 3) = t_eig;
 
-    // 2. Advanced ICP Pipeline (Coarse -> Fine Point-to-Plane)
+    auto cloud2_init = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    pcl::transformPointCloud(*cloud2, *cloud2_init, init);
 
-    // --- STAGE A: Standard ICP (Coarse) ---
+    auto ds1 = downsampleCloud(cloud1, 0.015f);
+    auto ds2 = downsampleCloud(cloud2_init, 0.015f);
+
+    if (ds1->empty() || ds2->empty())
     {
-        std::cout << "  [Stage A] Coarse Alignment (1.0m search)...\n";
-        auto source = downsample(cloud2_aligned, 0.05f);
-        auto target = downsample(cloud1, 0.05f);
+        std::cerr << "[ALIGN] ERROR: Downsampled clouds empty.\n";
+        return cloud1;
+    }
 
-        pcl::IterativeClosestPoint<pcl::PointXYZRGB, pcl::PointXYZRGB> icp;
-        icp.setInputSource(source);
-        icp.setInputTarget(target);
-        icp.setMaximumIterations(50);
-        icp.setMaxCorrespondenceDistance(1.0f); // Big snap
+    // clear nans from ds
+    std::vector<int> idx1, idx2;
+    pcl::removeNaNFromPointCloud(*ds1, *ds1, idx1);
+    pcl::removeNaNFromPointCloud(*ds2, *ds2, idx2);
 
-        pcl::PointCloud<pcl::PointXYZRGB> unused;
-        icp.align(unused);
+    std::cout << "    ds1 after NaN removal = " << ds1->size() << "\n";
+    std::cout << "    ds2 after NaN removal = " << ds2->size() << "\n";
 
-        if (icp.hasConverged()) {
-            pcl::transformPointCloud(*cloud2_aligned, *cloud2_aligned, icp.getFinalTransformation());
+    //point-to-point
+    std::cout << "  [Stage A] Coarse ICP (10cm, 20 iters)\n";
+
+    pcl::IterativeClosestPoint<pcl::PointXYZRGB, pcl::PointXYZRGB> icpA;
+    icpA.setInputSource(ds2);
+    icpA.setInputTarget(ds1);
+    icpA.setMaxCorrespondenceDistance(0.10f);
+    icpA.setMaximumIterations(20);
+
+    pcl::PointCloud<pcl::PointXYZRGB> tmpA;
+    icpA.align(tmpA);
+
+    if (icpA.hasConverged())
+    {
+        std::cout << "    -> Coarse ICP converged (score = "
+            << icpA.getFitnessScore() << ")\n";
+        pcl::transformPointCloud(*cloud2_init, *cloud2_init, icpA.getFinalTransformation());
+        pcl::transformPointCloud(*ds2, *ds2, icpA.getFinalTransformation());
+    }
+    else
+    {
+        std::cout << "    -> Coarse ICP did NOT converge.\n";
+    }
+
+    //point-to-plane
+    std::cout << "  [Stage B] Fine ICP (Point-to-Plane)\n";
+    std::cout << "    ds1 size        = " << ds1->size() << "\n";
+    std::cout << "    ds2 size        = " << ds2->size() << "\n";
+
+    if (ds1->size() < 500 || ds2->size() < 500)
+    {
+        std::cout << "    -> Not enough points for fine ICP. Skipping.\n";
+    }
+    else
+    {
+        auto n1 = computeNormals(ds1, 0.10f);
+        auto n2 = computeNormals(ds2, 0.10f);
+
+        std::cout << "    normals n1 pre-filter = " << n1->size() << "\n";
+        std::cout << "    normals n2 pre-filter = " << n2->size() << "\n";
+
+        std::vector<int> map1, map2;
+        pcl::removeNaNNormalsFromPointCloud(*n1, *n1, map1);
+        pcl::removeNaNNormalsFromPointCloud(*n2, *n2, map2);
+
+        std::cout << "    normals n1 = " << n1->size() << "\n";
+        std::cout << "    normals n2 = " << n2->size() << "\n";
+
+        if (n1->size() < 500 || n2->size() < 500)
+        {
+            std::cout << "    -> Not enough valid normals. Skipping fine ICP.\n";
+        }
+        else
+        {
+            pcl::IterativeClosestPointWithNormals<
+                pcl::PointNormal, pcl::PointNormal> icpB;
+            icpB.setInputSource(n2);
+            icpB.setInputTarget(n1);
+            icpB.setMaxCorrespondenceDistance(0.12f);
+            icpB.setMaximumIterations(20);
+            icpB.setTransformationEpsilon(1e-6);
+            icpB.setEuclideanFitnessEpsilon(1e-5);
+
+            pcl::PointCloud<pcl::PointNormal> tmpB;
+            icpB.align(tmpB);
+
+            if (icpB.hasConverged())
+            {
+                std::cout << "    -> Fine ICP converged (score = "
+                    << icpB.getFitnessScore() << ")\n";
+                //fine transform to full-res cloud2_init
+                pcl::transformPointCloud(*cloud2_init,
+                    *cloud2_init,
+                    icpB.getFinalTransformation());
+            }
+            else
+            {
+                std::cout << "    -> Fine ICP did NOT converge.\n";
+            }
         }
     }
 
-    // --- STAGE B: Point-to-Plane (Fine) ---
-    {
-        std::cout << "  [Stage B] Point-to-Plane Polish (5cm radius)...\n";
-
-        // Compute normals
-        auto source_normals = compute_normals(cloud2_aligned, 0.05f);
-        auto target_normals = compute_normals(cloud1, 0.05f);
-
-        // Filter NaN normals (Important for stability)
-        std::vector<int> mapping;
-        pcl::removeNaNNormalsFromPointCloud(*source_normals, *source_normals, mapping);
-        pcl::removeNaNNormalsFromPointCloud(*target_normals, *target_normals, mapping);
-
-        pcl::IterativeClosestPointWithNormals<pcl::PointNormal, pcl::PointNormal> icp_plane;
-        icp_plane.setInputSource(source_normals);
-        icp_plane.setInputTarget(target_normals);
-        icp_plane.setMaximumIterations(50);
-        icp_plane.setMaxCorrespondenceDistance(0.10f); // 10cm fine tune
-        icp_plane.setTransformationEpsilon(1e-8);
-
-        pcl::PointCloud<pcl::PointNormal> unused;
-        icp_plane.align(unused);
-
-        if (icp_plane.hasConverged()) {
-            std::cout << "    -> Converged (Score: " << icp_plane.getFitnessScore() << ")\n";
-            pcl::transformPointCloud(*cloud2_aligned, *cloud2_aligned, icp_plane.getFinalTransformation());
-        }
-        else {
-            std::cout << "    -> Failed to converge on planes.\n";
-        }
-    }
-
-    // 3. Merge
+    //merging
     auto merged = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>(*cloud1);
-    *merged += *cloud2_aligned;
+    *merged += *cloud2_init;
+
     return merged;
 }
