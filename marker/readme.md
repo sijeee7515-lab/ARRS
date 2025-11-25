@@ -45,6 +45,12 @@ transforms them into a shared coordinate system, and outputs fused PLY frames su
 
 6. run capture then: `./marker_calibration.exe capture <number of frame to be captured>`
 
+## Realtime
+
+1. follow build and calib steps from Instructions
+
+2. run realtime capture with: `./marker_calibration.exe realtime`
+
 ## Misc
 - remove `extrinsics.txt` if you want to recalibrate the cameras
 - `extrinsics.txt` is a great way to debug 

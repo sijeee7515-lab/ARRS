@@ -13,6 +13,9 @@
 #include <pcl/point_types.h>
 #include <pcl/common/transforms.h>
 #include <pcl/io/ply_io.h>    
+#include <pcl/visualization/pcl_visualizer.h>
+#include <pcl/visualization/cloud_viewer.h>
+
 
 #include <iostream>
 #include <iomanip>            
@@ -169,6 +172,60 @@ void capture_frames_and_save(
     }
 }
 
+void run_realtime_fusion(
+    std::vector<k4a::device>& devices,
+    const std::vector<Eigen::Matrix4f>& extrinsics)
+{
+    uint32_t device_count = devices.size();
+    std::vector<k4a::calibration> calibs;
+
+    for (auto& dev : devices)
+        calibs.push_back(get_calibration(dev));
+
+    //pcl viewer
+    pcl::visualization::PCLVisualizer::Ptr viewer(
+        new pcl::visualization::PCLVisualizer("Realtime Fusion"));
+
+    viewer->setBackgroundColor(0, 0, 0);
+    viewer->addCoordinateSystem(0.1);
+
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr fused(new pcl::PointCloud<pcl::PointXYZRGB>());
+    viewer->addPointCloud(fused, "fused");
+    viewer->setPointCloudRenderingProperties(
+        pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "fused");
+
+    std::cout << "\n=== REALTIME FUSION STARTED ===\n";
+    std::cout << "Press 'q' to quit.\n";
+
+    while (!viewer->wasStopped())
+    {
+        std::vector<k4a::capture> captures;
+        if (!capture_batch(devices, captures))
+            continue;
+
+        fused->clear();
+
+        for (uint32_t i = 0; i < device_count; i++)
+        {
+            auto cloud_i = frame_to_cloud(captures[i], calibs[i]);
+            if (!cloud_i) continue;
+
+            // transform slaves
+            if (i > 0)
+            {
+                pcl::transformPointCloud(*cloud_i, *cloud_i, extrinsics[i]);
+            }
+
+            *fused += *cloud_i;
+        }
+
+        viewer->updatePointCloud(fused, "fused");
+        viewer->spinOnce(1);
+    }
+
+    viewer->close();
+}
+
 int main(int argc, char** argv)
 {
     try {
@@ -215,6 +272,13 @@ int main(int argc, char** argv)
                 capture_frames_and_save(devices, extrinsics, frames);
             }
         }
+        else if (mode == "realtime")
+        {
+            if (load_extrinsics(extrinsics, kExtrinsicsPath))
+                run_realtime_fusion(devices, extrinsics);
+            else
+                std::cerr << "Could not load extrinsics.\n";
+        }
 
         for (auto& dev : devices) dev.close();
         return 0;
@@ -224,3 +288,4 @@ int main(int argc, char** argv)
         return -1;
     }
 }
+
