@@ -45,7 +45,7 @@ transforms them into a shared coordinate system, and outputs fused PLY frames su
 
 6. run capture then: `./marker_calibration.exe capture <number of frame to be captured>`
 
-## Realtime
+## Realtime Instructions
 
 1. follow build and calib steps from Instructions
 
