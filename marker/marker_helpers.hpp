@@ -18,3 +18,5 @@ bool detect_charuco_pose(
     const cv::Mat& distCoeffs,
     cv::Vec3d& rvec,
     cv::Vec3d& tvec);
+
+void export_charuco_tiled_A4();

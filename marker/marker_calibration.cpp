@@ -16,7 +16,6 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/visualization/cloud_viewer.h>
 
-
 #include <iostream>
 #include <iomanip>            
 #include <sstream>
@@ -278,6 +277,9 @@ int main(int argc, char** argv)
                 run_realtime_fusion(devices, extrinsics);
             else
                 std::cerr << "Could not load extrinsics.\n";
+        }else if (mode == "export_charuco") {
+            export_charuco_tiled_A4();
+            return 0;
         }
 
         for (auto& dev : devices) dev.close();

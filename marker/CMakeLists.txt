@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(OpenCV REQUIRED)
 find_package(PCL 1.12 REQUIRED)
 find_package(k4a REQUIRED)
+find_package(OpenCV REQUIRED aruco)
 
 include_directories(
     ${OpenCV_INCLUDE_DIRS}
@@ -24,7 +25,7 @@ add_executable(marker_calibration
     marker_helpers.cpp
     extrinsics_io.cpp
     align_point_clouds.cpp
-)
+  "charuco_board_generator.cpp")
 
 target_link_libraries(marker_calibration
     ${OpenCV_LIBS}
