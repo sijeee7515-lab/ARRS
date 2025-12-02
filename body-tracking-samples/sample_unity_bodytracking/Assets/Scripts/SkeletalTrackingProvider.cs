@@ -4,27 +4,27 @@ using System;
 using System.IO;
 using System.Threading;
 using UnityEngine;
-using System.Numerics; // For System.Numerics.Vector2, Vector3
 
 public class SkeletalTrackingProvider : BackgroundDataProvider
 {
     public Device SensorDevice { get; private set; }
     public Calibration SensorCalibration { get; private set; }
+
+    private Transformation transformation;
     private bool imuStarted = false;
 
     bool readFirstFrame = false;
     TimeSpan initialTimestamp;
 
+    public Stream RawDataLoggingFile = null;
+
+    private System.Runtime.Serialization.Formatters.Binary.BinaryFormatter binaryFormatter =
+        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+
     public SkeletalTrackingProvider(int id) : base(id)
     {
         Debug.Log("SkeletalTrackingProvider constructor for device " + id);
     }
-
-    System.Runtime.Serialization.Formatters.Binary.BinaryFormatter binaryFormatter { get; set; } =
-        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-
-    public Stream RawDataLoggingFile = null;
-
 
     public void StartImuIfNeeded()
     {
@@ -42,7 +42,6 @@ public class SkeletalTrackingProvider : BackgroundDataProvider
         }
     }
 
-
     protected override void RunBackgroundThreadAsync(int id, CancellationToken token)
     {
         try
@@ -58,31 +57,40 @@ public class SkeletalTrackingProvider : BackgroundDataProvider
                 device.StartCameras(new DeviceConfiguration()
                 {
                     CameraFPS = FPS.FPS30,
+                    ColorFormat = ImageFormat.ColorBGRA32,
                     ColorResolution = ColorResolution.R720p,
                     DepthMode = DepthMode.NFOV_Unbinned,
+                    SynchronizedImagesOnly = true,
                     WiredSyncMode = WiredSyncMode.Standalone,
                 });
 
                 Debug.Log($"Open K4A device successful. id {id} sn:{device.SerialNum}");
 
                 SensorCalibration = device.GetCalibration();
-                Calibration calibration = SensorCalibration;
+                transformation = SensorCalibration.CreateTransformation();
 
-                using (Tracker tracker = Tracker.Create(calibration, new TrackerConfiguration()
+                using (Tracker tracker = Tracker.Create(SensorCalibration, new TrackerConfiguration()
                 {
                     ProcessingMode = TrackerProcessingMode.Gpu,
                     SensorOrientation = SensorOrientation.Default
                 }))
                 {
+                    Debug.Log("Body tracker created.");
+
                     while (!token.IsCancellationRequested)
                     {
-                        using (Capture sensorCapture = device.GetCapture())
-                            tracker.EnqueueCapture(sensorCapture);
+                        // Get synchronized capture from device
+                        Capture rawCapture = device.GetCapture();
+                        tracker.EnqueueCapture(rawCapture);
 
                         using (Frame frame = tracker.PopResult(TimeSpan.Zero, throwOnTimeout: false))
                         {
                             if (frame == null)
+                            {
+                                Debug.Log("Pop result from tracker timeout!");
+                                rawCapture.Dispose();
                                 continue;
+                            }
 
                             IsRunning = true;
 
@@ -90,42 +98,19 @@ public class SkeletalTrackingProvider : BackgroundDataProvider
                             currentFrameData.NumOfBodies = frame.NumberOfBodies;
 
                             for (uint i = 0; i < currentFrameData.NumOfBodies; i++)
-                                currentFrameData.Bodies[i].CopyFromBodyTrackingSdk(frame.GetBody(i), calibration);
-
-                            Capture bodyFrameCapture = frame.Capture;
-
-                            Image depthImage = bodyFrameCapture.Depth;
-                            Image colorImage = bodyFrameCapture.Color;
-
-                            // ------------ COLOR ------------
-                            if (colorImage != null)
                             {
-                                currentFrameData.ColorWidth = colorImage.WidthPixels;
-                                currentFrameData.ColorHeight = colorImage.HeightPixels;
-
-                                int width = colorImage.WidthPixels;
-                                int height = colorImage.HeightPixels;
-                                int stride = colorImage.StrideBytes;     // padded row stride
-                                int bpp = 4;                          // BGRA → 4 bytes/pixel
-
-                                // RAW access (stride-safe)
-                                ReadOnlySpan<byte> src = colorImage.Memory.Span;  // <-- THIS IS THE FIX
-
-                                // Copy row-by-row into compacted buffer
-                                for (int y = 0; y < height; y++)
-                                {
-                                    int srcIndex = y * stride;       // padded row
-                                    int dstIndex = y * width * bpp;  // compact row
-
-                                    // Copy only the VALID pixel region, not the stride padding
-                                    src.Slice(srcIndex, width * bpp)
-                                       .CopyTo(currentFrameData.ColorImage.AsSpan().Slice(dstIndex));
-                                }
+                                currentFrameData.Bodies[i].CopyFromBodyTrackingSdk(
+                                    frame.GetBody(i), SensorCalibration);
                             }
 
+                            Image depthImage = rawCapture.Depth;
+                            if (depthImage == null)
+                            {
+                                Debug.LogWarning($"[Depth] rawCapture.Depth is null for dev {id}");
+                                rawCapture.Dispose();
+                                continue;
+                            }
 
-
-                            // ------------ TIMESTAMP ------------
                             if (!readFirstFrame)
                             {
                                 readFirstFrame = true;
@@ -135,26 +120,62 @@ public class SkeletalTrackingProvider : BackgroundDataProvider
                             currentFrameData.TimestampInMs =
                                 (float)(depthImage.DeviceTimestamp - initialTimestamp).TotalMilliseconds;
 
-                            // ------------ DEPTH ------------
-                            int w = depthImage.WidthPixels;
-                            int h = depthImage.HeightPixels;
+                            int width  = depthImage.WidthPixels;
+                            int height = depthImage.HeightPixels;
+                            int pixelCount = width * height;
 
-                            currentFrameData.DepthImageWidth = w;
-                            currentFrameData.DepthImageHeight = h;
+                            currentFrameData.DepthImageWidth  = width;
+                            currentFrameData.DepthImageHeight = height;
+                            currentFrameData.DepthImageSize   = pixelCount;
 
-                            var dspan = depthImage.GetPixels<ushort>().Span;
-                            int pcount = dspan.Length;
+                            currentFrameData.EnsureDepthCapacity(pixelCount);
 
-                            currentFrameData.DepthImageSize = pcount;
+                            // --- Depth 16-bit (mm) ---
+                            var depthSpan = depthImage.GetPixels<ushort>().Span;
+                            for (int i = 0; i < pixelCount; i++)
+                                currentFrameData.DepthImageMm[i] = depthSpan[i];
 
-                            for (int i = 0; i < pcount; i++)
-                                currentFrameData.DepthImageMm[i] = dspan[i];
-
-                            // Legacy grayscale
-                            for (int i = 0; i < pcount; i++)
+                            // --- Legacy 8-bit ---
+                            for (int i = 0; i < pixelCount; i++)
                             {
                                 ushort d = currentFrameData.DepthImageMm[i];
                                 currentFrameData.DepthImage[i] = (byte)Mathf.Clamp(d / 16, 0, 255);
+                            }
+
+                            // --- Color → Depth (using Capture overload, like sample) ---
+                            try
+                            {
+                                if (transformation != null)
+                                {
+                                    using (Image colorOnDepth = transformation.ColorImageToDepthCamera(rawCapture))
+                                    {
+                                        int cwidth  = colorOnDepth.WidthPixels;
+                                        int cheight = colorOnDepth.HeightPixels;
+                                        int cpx = cwidth * cheight;
+
+                                        currentFrameData.ColorWidth  = cwidth;
+                                        currentFrameData.ColorHeight = cheight;
+
+                                        currentFrameData.EnsureColorCapacity(cpx);
+
+                                        var colorSpan = colorOnDepth.GetPixels<BGRA>().Span;
+
+                                        for (int i = 0; i < cpx; i++)
+                                        {
+                                            BGRA c = colorSpan[i];
+                                            int idx = i * 4;
+
+                                            currentFrameData.ColorImageBgra[idx + 0] = c.B;
+                                            currentFrameData.ColorImageBgra[idx + 1] = c.G;
+                                            currentFrameData.ColorImageBgra[idx + 2] = c.R;
+                                            currentFrameData.ColorImageBgra[idx + 3] = c.A;
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.LogWarning($"[RGB] Failed to extract color for dev {id}: {e.Message}");
                             }
 
                             if (RawDataLoggingFile != null && RawDataLoggingFile.CanWrite)
@@ -162,74 +183,21 @@ public class SkeletalTrackingProvider : BackgroundDataProvider
 
                             SetCurrentFrameData(ref currentFrameData);
                         }
+
+                        rawCapture.Dispose();
                     }
+
+                    Debug.Log("Disposing of tracker for device " + id);
                 }
             }
 
-            RawDataLoggingFile?.Close();
+            if (RawDataLoggingFile != null)
+                RawDataLoggingFile.Close();
         }
         catch (Exception e)
         {
-            Debug.Log($"Exception in background thread for device {id}: {e}");
+            Debug.Log($"Exception in background thread for device {id}: {e.Message}");
             token.ThrowIfCancellationRequested();
         }
     }
-
-
-    // -------------------------------------------------------------------------
-    // PUBLIC: Depth → Color mapping (used by point cloud renderer)
-    // -------------------------------------------------------------------------
-    public bool DepthToColor(int px, int py, ushort depthMm, out int cx, out int cy)
-    {
-        return SensorCalibration.TransformDepthToColor(px, py, depthMm, out cx, out cy);
-    }
 }
-
-
-// =======================================================================================================
-//      EMBEDDED CALIBRATION EXTENSIONS — FIXED FOR YOUR SDK SIGNATURE
-// =======================================================================================================
-public static class CalibrationExtensions
-{
-    public static bool TransformDepthToColor(
-        this Calibration calib,
-        int depthX, int depthY, ushort depthMm,
-        out int colorX, out int colorY)
-    {
-        // Depth pixel → Vector2 (System.Numerics)
-        System.Numerics.Vector2 dp =
-            new System.Numerics.Vector2(depthX, depthY);
-
-        // Depth pixel → Depth 3D point
-        System.Numerics.Vector3? depthPoint3D =
-            calib.TransformTo3D(
-                dp,
-                depthMm,
-                CalibrationDeviceType.Depth,
-                CalibrationDeviceType.Depth);
-
-        if (!depthPoint3D.HasValue)
-        {
-            colorX = colorY = -1;
-            return false;
-        }
-
-        // Depth 3D → Color pixel using 3-argument overload
-        System.Numerics.Vector2? colorPixel =
-            calib.TransformTo2D(
-                depthPoint3D.Value,
-                CalibrationDeviceType.Depth,   // source space
-                CalibrationDeviceType.Color);  // target space
-
-        if (!colorPixel.HasValue)
-        {
-            colorX = colorY = -1;
-            return false;
-        }
-
-        colorX = (int)colorPixel.Value.X;
-        colorY = (int)colorPixel.Value.Y;
-        return true;
-    }
-}
-

@@ -21,33 +21,40 @@ public class BackgroundData : ISerializable
     public int DepthImageHeight { get; set; }
     public int DepthImageSize { get; set; }
 
-    // ----------- NEW: COLOR IMAGE SUPPORT -----------------
-    public byte[] ColorImage { get; set; }      // BGRA (K4A format)
+    // ----------------- NEW: COLOR IMAGE (BGRA ALIGNED TO DEPTH) -----------------
+    // BGRA — 4 bytes per pixel, aligned to depth resolution
+    public byte[] ColorImageBgra { get; set; }
     public int ColorWidth { get; set; }
     public int ColorHeight { get; set; }
-    // -------------------------------------------------------
+    // -----------------------------------------------------------------------------
 
     // Number of detected bodies
     public ulong NumOfBodies { get; set; }
 
     public Body[] Bodies { get; set; }
 
+
+    // ---------------------- CONSTRUCTOR ----------------------
     public BackgroundData(
-        int maxDepthImageSize = 1024 * 1024 * 3,
+        int initialDepthCapacity = 1024 * 1024,
         int maxBodiesCount = 20,
         int maxJointsSize = 100)
     {
-        DepthImage = new byte[maxDepthImageSize];
-        DepthImageMm = new ushort[maxDepthImageSize];
+        // Depth buffers
+        DepthImage = new byte[initialDepthCapacity];
+        DepthImageMm = new ushort[initialDepthCapacity];
 
-        // Allocate color buffer (RGBA per pixel worst case)
-        ColorImage = new byte[maxDepthImageSize * 4];
+        // Color buffer (BGRA: dynamically resized later if needed)
+        ColorImageBgra = new byte[initialDepthCapacity * 4];
 
+        // Body array
         Bodies = new Body[maxBodiesCount];
         for (int i = 0; i < maxBodiesCount; i++)
             Bodies[i] = new Body(maxJointsSize);
     }
 
+
+    // ---------------------- DESERIALIZATION ----------------------
     public BackgroundData(SerializationInfo info, StreamingContext context)
     {
         SensorId = info.GetInt32("SensorId");
@@ -64,12 +71,14 @@ public class BackgroundData : ISerializable
         DepthImage = (byte[])info.GetValue("DepthImage", typeof(byte[]));
         DepthImageMm = (ushort[])info.GetValue("DepthImageMm", typeof(ushort[]));
 
-        // NEW
+        // Color
         ColorWidth = info.GetInt32("ColorWidth");
         ColorHeight = info.GetInt32("ColorHeight");
-        ColorImage = (byte[])info.GetValue("ColorImage", typeof(byte[]));
+        ColorImageBgra = (byte[])info.GetValue("ColorImageBgra", typeof(byte[]));
     }
 
+
+    // ---------------------- SERIALIZATION ----------------------
     public void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         info.AddValue("SensorId", SensorId);
@@ -90,10 +99,27 @@ public class BackgroundData : ISerializable
         info.AddValue("DepthImage", DepthImage);
         info.AddValue("DepthImageMm", DepthImageMm);
 
-        // -------- NEW: SERIALIZE COLOR -----------
-        info.AddValue("ColorImage", ColorImage);
+        // Color image (BGRA)
+        info.AddValue("ColorImageBgra", ColorImageBgra);
         info.AddValue("ColorWidth", ColorWidth);
         info.AddValue("ColorHeight", ColorHeight);
-        //-------------------------------------------
+    }
+
+
+    // ---------------------- HELPERS ----------------------
+    public void EnsureDepthCapacity(int pixelCount)
+    {
+        if (DepthImage == null || DepthImage.Length < pixelCount)
+            DepthImage = new byte[pixelCount];
+
+        if (DepthImageMm == null || DepthImageMm.Length < pixelCount)
+            DepthImageMm = new ushort[pixelCount];
+    }
+
+    public void EnsureColorCapacity(int pixelCount)
+    {
+        int needed = pixelCount * 4;
+        if (ColorImageBgra == null || ColorImageBgra.Length < needed)
+            ColorImageBgra = new byte[needed];
     }
 }
