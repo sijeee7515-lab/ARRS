@@ -31,7 +31,7 @@ public static class PointCloudExtractor
             int u = i % width;
             int v = i / width;
 
-            float z = d / 1000f; // mm → meters
+            float z = d / 1000f;
             float x = ((u - cx) * z) / fx;
             float y = ((v - cy) * z) / fy;
 

@@ -2,16 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-/// <summary>
-/// Base class for all background data providers.
-/// This class owns the double-buffer swap used to pass BackgroundData from
-/// the background capture thread to the Unity main thread safely.
-/// 
-/// IMPORTANT:
-///  - Depth extraction is NOT done here.
-///  - Concrete subclasses (e.g., SkeletalTrackingProvider) must write real
-///    Kinect depth into BackgroundData.DepthImageMm before calling SetCurrentFrameData().
-/// </summary>
 public abstract class BackgroundDataProvider : IDisposable
 {
     // Double-buffer: the background thread writes into one buffer,
@@ -29,9 +19,6 @@ public abstract class BackgroundDataProvider : IDisposable
     private CancellationTokenSource _cancellationTokenSource;
     private CancellationToken _token;
 
-    /// <summary>
-    /// Constructor: starts the background capture thread for this provider.
-    /// </summary>
     public BackgroundDataProvider(int id)
     {
 #if UNITY_EDITOR
@@ -50,7 +37,6 @@ public abstract class BackgroundDataProvider : IDisposable
     }
 
     /// <summary>
-    /// Implement this in subclasses.
     /// This runs on a background thread and must:
     ///   - Capture Kinect frames
     ///   - Fill out a BackgroundData instance (including DepthImageMm)
@@ -58,10 +44,8 @@ public abstract class BackgroundDataProvider : IDisposable
     /// </summary>
     protected abstract void RunBackgroundThreadAsync(int id, CancellationToken token);
 
-    /// <summary>
-    /// Called from the background thread to publish a new frame.
-    /// Swaps the reference so Unity main thread sees it on next Update().
-    /// </summary>
+    // Called from the background thread to publish a new frame.
+    // Swaps the reference so Unity main thread sees it on next Update().
     public void SetCurrentFrameData(ref BackgroundData currentFrameData)
     {
         lock (m_lockObj)
@@ -75,10 +59,8 @@ public abstract class BackgroundDataProvider : IDisposable
         }
     }
 
-    /// <summary>
-    /// Called from Unity main thread to fetch the latest frame.
-    /// Returns true if new data is available.
-    /// </summary>
+    // Called from Unity main thread to fetch the latest frame.
+    // Returns true if new data is available.
     public bool GetCurrentFrameData(ref BackgroundData dataBuffer)
     {
         lock (m_lockObj)
@@ -95,9 +77,8 @@ public abstract class BackgroundDataProvider : IDisposable
         }
     }
 
-    /// <summary>
-    /// Stops the background thread on dispose or Editor exit.
-    /// </summary>
+
+    // Stops the background thread on dispose or Editor exit.
     public void Dispose()
     {
 #if UNITY_EDITOR

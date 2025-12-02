@@ -5,7 +5,7 @@ public static class BodyTransformUtils
 {
     /// <summary>
     /// Returns world joint positions in Unity coordinates.
-    /// Kinect → Unity mapping: (x, y, z) → (x, -y, z)
+    /// Kinect to unity mapping
     /// </summary>
     public static Vector3[] GetWorldJointPositions(Body body, Transform cameraRoot)
     {
@@ -15,7 +15,6 @@ public static class BodyTransformUtils
         {
             var jp = body.JointPositions3D[i];
 
-            // Kinect cam space → Unity space
             Vector3 localUnity = new Vector3(jp.X, -jp.Y, jp.Z);
 
             // Convert through camera root
@@ -25,9 +24,7 @@ public static class BodyTransformUtils
         return worldJoints;
     }
 
-    /// <summary>
     /// Gets a single joint world position in Unity coordinates.
-    /// </summary>
     public static Vector3 GetWorldJoint(Body body, int jointId, Transform cameraRoot)
     {
         var jp = body.JointPositions3D[jointId];
@@ -35,9 +32,7 @@ public static class BodyTransformUtils
         return cameraRoot.TransformPoint(localUnity);
     }
 
-    /// <summary>
     /// Converts Kinect joint directly to Unity without camera transform.
-    /// </summary>
     public static Vector3 KinectToUnity(Vector3 kinect)
     {
         return new Vector3(kinect.x, -kinect.y, kinect.z);

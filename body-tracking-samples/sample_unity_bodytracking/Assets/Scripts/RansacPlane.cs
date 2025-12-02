@@ -11,8 +11,7 @@ public static class RansacPlane
         public bool valid;
     }
 
-    // NOTE: points[] must be in KINECT CAMERA SPACE: (+X right, +Y down, +Z forward)
-    // This function AUTOCONVERTS to UNITY SPACE: (+X right, +Y up, +Z forward)
+    // points[] must be in KINECT CAMERA SPACE: (+X right, +Y down, +Z forward)
     public static PlaneResult FitPlaneRANSAC(Vector3[] points, int iterations = 200, float threshold = 0.03f)
     {
         PlaneResult best = new PlaneResult();
@@ -24,7 +23,7 @@ public static class RansacPlane
 
         for (int i = 0; i < iterations; i++)
         {
-            // --- Sample 3 non-zero points ---
+            //Sample 3 non-zero points
             Vector3 p1 = Vector3.zero, p2 = Vector3.zero, p3 = Vector3.zero;
 
             for (int tries = 0; tries < 20; tries++)
@@ -37,7 +36,7 @@ public static class RansacPlane
                     break;
             }
 
-            // --- Compute raw normal in Kinect camera coordinates ---
+            //Compute raw normal in Kinect camera coordinates
             Vector3 v1 = p2 - p1;
             Vector3 v2 = p3 - p1;
             Vector3 normalKinect = Vector3.Cross(v1, v2);
@@ -47,7 +46,6 @@ public static class RansacPlane
 
             normalKinect.Normalize();
 
-            // --- Convert Kinect → Unity (+Y down → +Y up) ---
             Vector3 normalUnity = new Vector3(
                 normalKinect.x,
                 -normalKinect.y,
@@ -61,7 +59,7 @@ public static class RansacPlane
             // Plane form: dot(n, x) + d = 0
             float d = -Vector3.Dot(normalUnity, p1Unity);
 
-            // --- Count inliers in Unity space ---
+            //Count inliers in Unity space
             int count = 0;
             for (int k = 0; k < N; k++)
             {
@@ -74,7 +72,7 @@ public static class RansacPlane
                     count++;
             }
 
-            // --- Update best model ---
+            //Update best model
             if (count > best.inliers)
             {
                 best.normal = normalUnity;
@@ -84,9 +82,7 @@ public static class RansacPlane
             }
         }
 
-        // ---------------------------------------------------------
         // SAFETY FIX: Force plane normal to face upward in Unity
-        // ---------------------------------------------------------
         if (best.valid)
         {
             // If the normal is pointing downward, flip it & plane offset
@@ -100,7 +96,7 @@ public static class RansacPlane
         return best;
     }
 
-    // Kinect → Unity position mapping
+    // Kinect to Unity position mapping
     private static Vector3 ConvertPointKinectToUnity(Vector3 p)
     {
         return new Vector3(p.x, -p.y, p.z);

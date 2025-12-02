@@ -82,7 +82,7 @@ public class SkeletonFusionManager : MonoBehaviour
             confidencesPerCam.Add(body.JointPrecisions);
         }
 
-        // If no cameras produced valid skeleton data → no fused result
+        // If no cameras produced valid skeleton data then no fused result
         if (jointCount <= 0 || worldJointsPerCam.Count == 0)
         {
             hasFusedBody = false;
@@ -144,5 +144,43 @@ public class SkeletonFusionManager : MonoBehaviour
         }
 
         hasFusedBody = true;
+        ComputeFusedSkeletonError(worldJointsPerCam, fusedBody, calibrator.cameraRoots);
     }
+
+    private void ComputeFusedSkeletonError(
+    List<Vector3[]> worldJointsPerCam,
+    Body fusedBody,
+    Transform[] cameraRoots)
+{
+    int jointCount = fusedBody.Length;
+    if (jointCount <= 0) return;
+
+    // Convert fused skeleton to world space (use Camera 0 as reference)
+    Vector3[] fusedWorld = BodyTransformUtils.GetWorldJointPositions(
+        fusedBody,
+        cameraRoots[0]
+    );
+
+    float totalError = 0f;
+    int sampleCount = 0;
+
+    foreach (Vector3[] cam in worldJointsPerCam)
+    {
+        for (int j = 0; j < jointCount; j++)
+        {
+            float e = Vector3.Distance(fusedWorld[j], cam[j]);
+            totalError += e;
+            sampleCount++;
+        }
+    }
+
+    if (sampleCount == 0) return;
+
+    float avgError = totalError / sampleCount; // in meters
+    Debug.Log($"[FusionError] Avg joint error = {avgError * 1000f:F1} mm");
 }
+
+
+}
+
+

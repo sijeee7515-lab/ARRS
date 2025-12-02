@@ -23,6 +23,12 @@ public class RgbPointCloudRenderer : MonoBehaviour
     private int currentWidth = -1;
     private int currentHeight = -1;
 
+    //Latency
+    private bool latencyBaselineSet = false;
+    private float latencyBaselineMs = 0f;
+    private float nextLogTime = 0f;
+    public float latencyLogInterval = 1.5f;
+
     void Awake()
     {
         if (multiCameraManager == null)
@@ -52,6 +58,28 @@ public class RgbPointCloudRenderer : MonoBehaviour
         int width = frame.DepthImageWidth;
         int height = frame.DepthImageHeight;
         int N = width * height;
+
+        // Compute point cloud latency
+
+        float nowMs = Time.realtimeSinceStartup * 1000f;
+        float rawAgeMs = nowMs - frame.TimestampInMs;
+
+        // Calibrate once to remove the constant offset between Unity & Kinect clocks
+        if (!latencyBaselineSet)
+        {
+            latencyBaselineSet = true;
+            latencyBaselineMs = rawAgeMs;
+        }
+
+        // Actual end-to-end latency relative to first frame
+        float latencyMs = rawAgeMs - latencyBaselineMs;
+
+        // Log occasionally, not every frame
+        if (Time.time >= nextLogTime)
+        {
+            Debug.Log($"[Latency][Cam {cameraIndex}] {latencyMs:F2} ms (raw={rawAgeMs:F2} ms)");
+            nextLogTime = Time.time + latencyLogInterval;
+        }
 
         if (width <= 0 || height <= 0 || frame.DepthImageMm == null)
             return;

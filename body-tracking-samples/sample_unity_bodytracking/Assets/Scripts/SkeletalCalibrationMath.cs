@@ -3,9 +3,7 @@ using Microsoft.Azure.Kinect.BodyTracking;
 
 public static class SkeletonCalibrationMath
 {
-    //---------------------------------------------------------------------------
     // Quaternion + vector averaging utilities
-    //---------------------------------------------------------------------------
 
     public static Quaternion AverageQuaternions(Quaternion[] quaternions)
     {
@@ -41,10 +39,7 @@ public static class SkeletonCalibrationMath
         return sum / vectors.Length;
     }
 
-    //---------------------------------------------------------------------------
-    // NEW: Extract torso basis in Unity coordinates
-    //---------------------------------------------------------------------------
-
+    //Extract torso basis in Unity coordinates
     public static bool TryGetBodyBasisUnity(
         Body body,
         out Vector3 up,
@@ -68,7 +63,6 @@ public static class SkeletonCalibrationMath
         var sl = body.JointPositions3D[shoulderLIdx];
         var sr = body.JointPositions3D[shoulderRIdx];
 
-        // Kinect → Unity (Option A)
         Vector3 P = new Vector3(p.X, -p.Y, p.Z);
         Vector3 C = new Vector3(c.X, -c.Y, c.Z);
         Vector3 SL = new Vector3(sl.X, -sl.Y, sl.Z);

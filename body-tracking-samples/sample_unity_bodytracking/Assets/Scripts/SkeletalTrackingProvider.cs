@@ -130,19 +130,19 @@ public class SkeletalTrackingProvider : BackgroundDataProvider
 
                             currentFrameData.EnsureDepthCapacity(pixelCount);
 
-                            // --- Depth 16-bit (mm) ---
+                            //Depth 16-bit (mm)
                             var depthSpan = depthImage.GetPixels<ushort>().Span;
                             for (int i = 0; i < pixelCount; i++)
                                 currentFrameData.DepthImageMm[i] = depthSpan[i];
 
-                            // --- Legacy 8-bit ---
+                            //8-bit
                             for (int i = 0; i < pixelCount; i++)
                             {
                                 ushort d = currentFrameData.DepthImageMm[i];
                                 currentFrameData.DepthImage[i] = (byte)Mathf.Clamp(d / 16, 0, 255);
                             }
 
-                            // --- Color → Depth (using Capture overload, like sample) ---
+                            //Color to Depth (using Capture overload, like sample)
                             try
                             {
                                 if (transformation != null)

@@ -44,9 +44,7 @@ public class MultiCameraManager : MonoBehaviour
         }
     }
 
-    // -----------------------------
-    // NEW: EXPOSE PROVIDER BY INDEX
-    // -----------------------------
+    //provider by index
     public SkeletalTrackingProvider GetProvider(int camIndex)
     {
         if (providers == null)

@@ -44,9 +44,7 @@ public class MultiCameraCalibrator : MonoBehaviour
         if (multiCameraManager == null)
             multiCameraManager = FindObjectOfType<MultiCameraManager>();
 
-        // ----------------------------------------------------------
-        // 🔥 Create ONE persistent camera model per cameraRoot
-        // ----------------------------------------------------------
+        // Create persistent camera model per cameraRoot
         if (cameraMarkerPrefab != null && cameraRoots != null)
         {
             for (int i = 0; i < cameraRoots.Length; i++)
@@ -99,9 +97,7 @@ public class MultiCameraCalibrator : MonoBehaviour
         isCollecting = false;
     }
 
-    // ----------------------------------------------------------------------
     // Add a translation sample
-    // ----------------------------------------------------------------------
     public void AddCalibrationSample(int targetCamIndex, Body bodyRef, Body bodyTarget)
     {
         if (!translationSamples.ContainsKey(targetCamIndex))
@@ -123,9 +119,7 @@ public class MultiCameraCalibrator : MonoBehaviour
         }
     }
 
-    // ----------------------------------------------------------------------
     // Translation estimation (averaged from several stable joints)
-    // ----------------------------------------------------------------------
     bool TryEstimateSingleSample(Body b0, Body b1, out Vector3 tSample)
     {
         tSample = Vector3.zero;
@@ -161,9 +155,7 @@ public class MultiCameraCalibrator : MonoBehaviour
         return true;
     }
 
-    // ----------------------------------------------------------------------
     // Apply calibration
-    // ----------------------------------------------------------------------
     public void FinishCalibrationForCamera(int targetCamIndex)
     {
         if (!translationSamples.ContainsKey(targetCamIndex) ||
@@ -205,12 +197,9 @@ public class MultiCameraCalibrator : MonoBehaviour
     }
 }
 
-// ----------------------------------------------------------------------
-// Kinect → Unity mapping helpers
-// ----------------------------------------------------------------------
+//mapping helpers
 public static class VecExtensions
 {
-    // Kinect coordinate (x, y-down, z) → Unity (x, y-up, z)
     public static Vector3 ToUnityKinect(this System.Numerics.Vector3 v)
     {
         return new Vector3(v.X, -v.Y, v.Z);

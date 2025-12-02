@@ -21,12 +21,11 @@ public class BackgroundData : ISerializable
     public int DepthImageHeight { get; set; }
     public int DepthImageSize { get; set; }
 
-    // ----------------- NEW: COLOR IMAGE (BGRA ALIGNED TO DEPTH) -----------------
+    //Color Image (BGRA Aligned to Depth)
     // BGRA — 4 bytes per pixel, aligned to depth resolution
     public byte[] ColorImageBgra { get; set; }
     public int ColorWidth { get; set; }
     public int ColorHeight { get; set; }
-    // -----------------------------------------------------------------------------
 
     // Number of detected bodies
     public ulong NumOfBodies { get; set; }
@@ -34,7 +33,6 @@ public class BackgroundData : ISerializable
     public Body[] Bodies { get; set; }
 
 
-    // ---------------------- CONSTRUCTOR ----------------------
     public BackgroundData(
         int initialDepthCapacity = 1024 * 1024,
         int maxBodiesCount = 20,
@@ -54,7 +52,7 @@ public class BackgroundData : ISerializable
     }
 
 
-    // ---------------------- DESERIALIZATION ----------------------
+    // Deserialization
     public BackgroundData(SerializationInfo info, StreamingContext context)
     {
         SensorId = info.GetInt32("SensorId");
@@ -77,8 +75,7 @@ public class BackgroundData : ISerializable
         ColorImageBgra = (byte[])info.GetValue("ColorImageBgra", typeof(byte[]));
     }
 
-
-    // ---------------------- SERIALIZATION ----------------------
+    //Serialization
     public void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         info.AddValue("SensorId", SensorId);
@@ -106,7 +103,7 @@ public class BackgroundData : ISerializable
     }
 
 
-    // ---------------------- HELPERS ----------------------
+    //Helpers
     public void EnsureDepthCapacity(int pixelCount)
     {
         if (DepthImage == null || DepthImage.Length < pixelCount)
